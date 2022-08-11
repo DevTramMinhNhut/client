@@ -8,10 +8,39 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { CgSearchFound } from 'react-icons/cg';
 import { BsCart2 } from 'react-icons/bs';
 import Badge from 'react-bootstrap/Badge';
+import Tippy from '@tippyjs/react';
+import HeadlessTippy from '@tippyjs/react/headless';
+import 'tippy.js/dist/tippy.css';
+import { useEffect, useState, useRef } from 'react';
+import Image from '../../../Image';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 
 function Header() {
+  const currentUser = false;
+
+  const [kqtimkiem, setKqtimkiem] = useState([]);
+  const [showKq, setShowKq] = useState(true);
+  const [searchValue, setSearchValue] = useState('');
+
+  const inputRef = useRef();
+
+  useEffect(() => {
+    if (!searchValue.trim()) {
+      return;
+    }
+    fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
+      .then((res) => res.json())
+      .then((res) => {
+        setKqtimkiem(res.data);
+      });
+  }, [searchValue]);
+  console.log(kqtimkiem.length);
+  const handleHidenKq = () => {
+    setShowKq(false);
+  };
+
   return (
     <header className={cx('default-header-wrapper')}>
       {
@@ -24,39 +53,84 @@ function Header() {
                 <Nav className="me-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
                   <Nav.Link href="">Trang Chủ</Nav.Link>
                   <Nav.Link href="">Liên Hệ</Nav.Link>
-                  <Form className="d-flex">
-                    <Form.Control type="search" placeholder="tìm kiếm sản phẩm" className="me-2" aria-label="Search" />
-                    <CgSearchFound className={cx('icon-tim-kiem')} />
-                  </Form>
-                  <div className={cx('header-cart')}>
-                    <BsCart2 className={cx('cart')} />
-                    <span className={cx('header-cart-number')}>1</span>
-                    <Badge bg="danger">500.000 đ</Badge>
-                  </div>
-                </Nav>
-                <Nav>
-                  <NavDropdown
-                    id="header-nav-dropdown"
-                    title="Xin Chào tram minh nhut"
-                    menuVariant="light"
-                    autoClose="outside"
-                    drop="start"
-                    enable-caret="true"
+                  <HeadlessTippy
+                    visible={showKq && kqtimkiem.length > 0}
+                    interactive
+                    render={(attrs) => (
+                      <div className={cx('timkiem-ketqua')} tabIndex="-1" {...attrs}>
+                        {kqtimkiem.map((result) => (
+                          <Link to={`/@${result.nickname}`} key={result.id} className={cx('timkiem-ketqua-content')}>
+                            <Image className={cx('timkiem-ketqua-img')} src={result.avatar} alt="loi" />
+                            <div className={cx('timkiem-ketqua-name')}>
+                              <h6 className={cx('timkiem-ketqua-name-product')}> {result.full_name} </h6>
+                            </div>
+                          </Link>
+                        ))}
+                        <div className={cx('timkiem-ketqua-content')}>
+                          <Image
+                            className={cx('timkiem-ketqua-img')}
+                            src="https://cdn.tgdd.vn/Products/Images/8788/245528/bhx/dua-hau-giong-my-tui-2kg-202107101612531155.jpg"
+                            alt="loi"
+                          />
+                          <div className={cx('timkiem-ketqua-name')}>
+                            <h6 className={cx('timkiem-ketqua-name-product')}> Dưa hấu </h6>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    onClickOutside={handleHidenKq}
                   >
-                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                  </NavDropdown>
+                    <Form className="d-flex">
+                      <Form.Control
+                        ref={inputRef}
+                        type="search"
+                        placeholder="tìm kiếm sản phẩm"
+                        className="me-2"
+                        aria-label="Search"
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        onFocus={() => setShowKq(true)}
+                      />
+                      <Tippy content="Tìm kiếm">
+                        <div className={cx('div-icon-tim-kiem')}>
+                          <CgSearchFound className={cx('icon-tim-kiem')} />
+                        </div>
+                      </Tippy>
+                    </Form>
+                  </HeadlessTippy>
+                  <Tippy content="Giỏ Hàng">
+                    <div className={cx('header-cart')}>
+                      <BsCart2 className={cx('cart')} />
+                      <span className={cx('header-cart-number')}>1</span>
+                      <Badge bg="danger">500.000 đ</Badge>
+                    </div>
+                  </Tippy>
                 </Nav>
-                {/* <Nav className={cx('register-login')}>
-                  <Nav.Link href="#deets" eventKey={2}>
-                    Đăng Ký
-                  </Nav.Link>
-                  <Nav className="gachngang"> | </Nav>
-                  <Nav.Link href="#memes">Đăng Nhập</Nav.Link>
-                </Nav> */}
+                {currentUser ? (
+                  <Nav>
+                    <NavDropdown
+                      id="header-nav-dropdown"
+                      title="Xin Chào tram minh nhut"
+                      menuVariant="light"
+                      autoClose="outside"
+                      drop="start"
+                      enable-caret="true"
+                    >
+                      <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                      <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+                      <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                    </NavDropdown>
+                  </Nav>
+                ) : (
+                  <Nav className={cx('register-login')}>
+                    <Nav.Link href="#deets" eventKey={2}>
+                      Đăng Ký
+                    </Nav.Link>
+                    <Nav className="gachngang"> | </Nav>
+                    <Nav.Link href="#memes">Đăng Nhập</Nav.Link>
+                  </Nav>
+                )}
               </Navbar.Collapse>
             </Container>
           </Navbar>
