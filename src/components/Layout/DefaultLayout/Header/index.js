@@ -14,6 +14,9 @@ import 'tippy.js/dist/tippy.css';
 import { useEffect, useState, useRef } from 'react';
 import Image from '../../../Image';
 import { Link } from 'react-router-dom';
+import useDebounce from '../../../../hooks/useDebounce';
+
+import * as search from '../../../../api/search';
 
 const cx = classNames.bind(style);
 
@@ -25,18 +28,21 @@ function Header() {
   const [searchValue, setSearchValue] = useState('');
 
   const inputRef = useRef();
+  const debounced = useDebounce(searchValue, 400);
 
   useEffect(() => {
-    if (!searchValue.trim()) {
+    if (!debounced.trim()) {
+      setKqtimkiem([]);
       return;
     }
-    fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
-      .then((res) => res.json())
-      .then((res) => {
-        setKqtimkiem(res.data);
-      });
-  }, [searchValue]);
-  console.log(kqtimkiem.length);
+
+    const fetchApi = async () => {
+      const result = await search.search(debounced);
+      setKqtimkiem(result);
+    };
+    fetchApi();
+  }, [debounced]);
+
   const handleHidenKq = () => {
     setShowKq(false);
   };
