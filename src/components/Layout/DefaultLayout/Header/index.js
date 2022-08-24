@@ -57,8 +57,12 @@ function Header() {
               <Navbar.Toggle aria-controls="navbarScroll" />
               <Navbar.Collapse id="navbarScroll">
                 <Nav className="me-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
-                  <Nav.Link href="">Trang Chủ</Nav.Link>
-                  <Nav.Link href="">Liên Hệ</Nav.Link>
+                  <Nav.Link className={cx('header-link')} href="">
+                    Trang Chủ
+                  </Nav.Link>
+                  <Nav.Link className={cx('header-link')} href="">
+                    Liên Hệ
+                  </Nav.Link>
                   <HeadlessTippy
                     visible={showKq && kqtimkiem.length > 0}
                     interactive
@@ -130,11 +134,13 @@ function Header() {
                   </Nav>
                 ) : (
                   <Nav className={cx('register-login')}>
-                    <Nav.Link href="#deets" eventKey={2}>
+                    <Nav.Link className={cx('header-link')} href="#deets" eventKey={2}>
                       Đăng Ký
                     </Nav.Link>
                     <Nav className="gachngang"> | </Nav>
-                    <Nav.Link href="#memes">Đăng Nhập</Nav.Link>
+                    <Nav.Link className={cx('header-link')} href="#memes">
+                      Đăng Nhập
+                    </Nav.Link>
                   </Nav>
                 )}
               </Navbar.Collapse>

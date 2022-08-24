@@ -19,7 +19,7 @@
   background-color: rgb(255, 255, 255);
 }
 
-.form-label {
+.login-form-label {
   position: relative;
   right: 55px;
   margin-top: 10px;
@@ -31,8 +31,8 @@
 }
 
 .form-check-input {
-  position: relative;
-  left: 305px;
+  position: relative !important;
+  left: 305px !important;
 }
 .form-check-label {
   color: rgb(255, 255, 255);
@@ -40,12 +40,12 @@
   right: 30px;
 }
 
-.form-control {
+.form-control-login {
   position: relative;
   left: 300px !important;
   margin-top: 10px;
 }
-.btn {
+.btn-login {
   position: relative;
   left: 300px;
   width: 38%;
@@ -78,6 +78,6 @@
 
 .login-google {
   position: relative;
-  margin-left: 15px;
+  margin-left: 20px;
   width: 30%;
 }
