@@ -20,7 +20,7 @@ function Detail() {
       <div className={cx('detail-product-breadcrumbs')}>
         {' '}
         <Breadcrumb>
-          <Breadcrumb.Item href="#">Trang Chủ</Breadcrumb.Item>
+          <Breadcrumb.Item href="#">Trang chủ</Breadcrumb.Item>
           <Breadcrumb.Item href="#">Chi tiết sản phẩm</Breadcrumb.Item>
           <Breadcrumb.Item active>Thịch Heo</Breadcrumb.Item>
         </Breadcrumb>{' '}

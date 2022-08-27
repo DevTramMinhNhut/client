@@ -1,6 +1,6 @@
+import Cart from '../views/cart';
 import Detail from '../views/Detail';
 import Home from '../views/home/Home';
-import Information from '../views/Information/Information';
 import Login from '../views/login';
 import Register from '../views/register';
 
@@ -10,7 +10,7 @@ const publicRoutes = [
   { path: '/detail/product/1', component: Detail },
   { path: '/login', component: Login, layout: null },
   { path: '/register', component: Register, layout: null },
-  { path: '/information', component: Information, layout: null },
+  { path: '/cart', component: Cart },
 ];
 // cần đăng nhập
 const privateRoutes = [];
