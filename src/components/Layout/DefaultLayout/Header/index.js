@@ -21,7 +21,17 @@ import * as search from '../../../../api/search';
 const cx = classNames.bind(style);
 
 function Header() {
-  const currentUser = false;
+  // user
+  const [isUser, setIsUser] = useState({});
+  const [currentUser, setCurrentUser] = useState(false);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('author'));
+    if (user) {
+      setIsUser(user);
+      setCurrentUser(true);
+    }
+  }, []);
 
   const [kqtimkiem, setKqtimkiem] = useState([]);
   const [showKq, setShowKq] = useState(true);
@@ -119,7 +129,7 @@ function Header() {
                   <Nav>
                     <NavDropdown
                       id="header-nav-dropdown"
-                      title="Xin Chào tram minh nhut"
+                      title={`Xin chào ${isUser.username}`}
                       menuVariant="light"
                       autoClose="outside"
                       drop="start"

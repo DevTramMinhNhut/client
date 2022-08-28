@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import Image from '../../components/Image';
 import { Badge } from 'reactstrap';
 import { Button } from 'reactstrap';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(style);
 
