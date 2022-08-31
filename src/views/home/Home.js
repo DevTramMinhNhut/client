@@ -11,19 +11,35 @@ import { Link } from 'react-router-dom';
 import Image from '../../components/Image';
 import { Badge } from 'reactstrap';
 import { Button } from 'reactstrap';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import product from '../../apifect/product.json';
 
 const cx = classNames.bind(style);
 
 function Home() {
-  // const homeContent = [
-  //   { key: '1', path: 'home-slider' },
-  //   { key: '2', path: 'home-prodcut-like' },
-  //   { key: '3', path: 'home-prodcut-discount' },
-  //   { key: '4', path: 'home-prodcut1' },
-  //   { key: '4', path: 'home-prodcut2' },
-  //   { key: '4', path: 'home-prodcut3' },
-  // ];
+  const [data, setData] = useState([]);
+
+  const [cartItem, setCartItem] = useState([]);
+
+  useEffect(() => {
+    setData(product.products);
+  }, []);
+
+  const onAddCart = (product_id) => {
+    const product = data.find((x) => x.product_id === product_id);
+    const exits = cartItem.find((x) => x.product_id === product_id);
+    if (exits) {
+      setCartItem(cartItem.map((x) => (x.product_id === product_id ? { ...exits, qty: exits.qty + 1 } : x)));
+    } else {
+      setCartItem([...cartItem, { ...product, qty: 1 }]);
+    }
+  };
+  useEffect(() => {
+    if (cartItem !== '') console.log(cartItem);
+    localStorage.setItem('cart', JSON.stringify(cartItem));
+  }, [cartItem]);
+
   return (
     <Container fluid="md">
       <Row className={cx('home-slider')}>
@@ -313,150 +329,37 @@ function Home() {
           <div className={cx('home-prodcut-discount-content')}>
             <Container>
               <Row>
-                <Col sm={3}>
-                  <div className={cx('home-prodcut-discount-img')}>
-                    <Image
-                      className="d-block w-100"
-                      src="https://cdn.tgdd.vn/Products/Images/7082/172180/bhx/suon-non-chay-an-nhien-goi-150g-202205231701390268_300x300.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className={cx('home-prodcut-discount-name')}>
-                    <span> tram minh nhuut </span>
-                  </div>
-                  <div className={cx('home-prodcut-discount-price')}>
-                    <strong>51.000₫</strong>
-                    <span className={cx('home-prodcut-discount-price-1')}>56.500₫</span>
-                    <label>
-                      <Badge pill className={cx('home-prodcut-discount-price-2')}>
-                        -14%
-                      </Badge>
-                    </label>
-                  </div>
-                  <div className={cx('home-prodcut-discount-button')}>
-                    <Button className={cx('home-prodcut-discount-button-1')}>Light</Button>
-                  </div>
-                </Col>
-                <Col sm={3}>
-                  <div className={cx('home-prodcut-discount-img')}>
-                    <Image
-                      className="d-block w-100"
-                      src="https://cdn.tgdd.vn/Products/Images/7082/172180/bhx/suon-non-chay-an-nhien-goi-150g-202205231701390268_300x300.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className={cx('home-prodcut-discount-name')}>
-                    <span> tram minh nhuut </span>
-                  </div>
-                  <div className={cx('home-prodcut-discount-price')}>
-                    <strong>51.000₫</strong>
-                    <span className={cx('home-prodcut-discount-price-1')}>56.500₫</span>
-                    <label>
-                      <Badge pill className={cx('home-prodcut-discount-price-2')}>
-                        -14%
-                      </Badge>
-                    </label>
-                  </div>
-                  <div className={cx('home-prodcut-discount-button')}>
-                    <Button className={cx('home-prodcut-discount-button-1')}>Light</Button>
-                  </div>
-                </Col>
-                <Col sm={3}>
-                  <div className={cx('home-prodcut-discount-img')}>
-                    <Image
-                      className="d-block w-100"
-                      src="https://cdn.tgdd.vn/Products/Images/7082/172180/bhx/suon-non-chay-an-nhien-goi-150g-202205231701390268_300x300.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className={cx('home-prodcut-discount-name')}>
-                    <span> tram minh nhuut </span>
-                  </div>
-                  <div className={cx('home-prodcut-discount-price')}>
-                    <strong>51.000₫</strong>
-                    <span className={cx('home-prodcut-discount-price-1')}>56.500₫</span>
-                    <label>
-                      <Badge pill className={cx('home-prodcut-discount-price-2')}>
-                        -14%
-                      </Badge>
-                    </label>
-                  </div>
-                  <div className={cx('home-prodcut-discount-button')}>
-                    <Button className={cx('home-prodcut-discount-button-1')}>Light</Button>
-                  </div>
-                </Col>
-                <Col sm={3}>
-                  <div className={cx('home-prodcut-discount-img')}>
-                    <Image
-                      className="d-block w-100"
-                      src="https://cdn.tgdd.vn/Products/Images/7082/172180/bhx/suon-non-chay-an-nhien-goi-150g-202205231701390268_300x300.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className={cx('home-prodcut-discount-name')}>
-                    <span> tram minh nhuut </span>
-                  </div>
-                  <div className={cx('home-prodcut-discount-price')}>
-                    <strong>51.000₫</strong>
-                    <span className={cx('home-prodcut-discount-price-1')}>56.500₫</span>
-                    <label>
-                      <Badge pill className={cx('home-prodcut-discount-price-2')}>
-                        -14%
-                      </Badge>
-                    </label>
-                  </div>
-                  <div className={cx('home-prodcut-discount-button')}>
-                    <Button className={cx('home-prodcut-discount-button-1')}>Light</Button>
-                  </div>
-                </Col>
-                <Col sm={3}>
-                  <div className={cx('home-prodcut-discount-img')}>
-                    <Image
-                      className="d-block w-100"
-                      src="https://cdn.tgdd.vn/Products/Images/7082/172180/bhx/suon-non-chay-an-nhien-goi-150g-202205231701390268_300x300.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className={cx('home-prodcut-discount-name')}>
-                    <span> tram minh nhuut </span>
-                  </div>
-                  <div className={cx('home-prodcut-discount-price')}>
-                    <strong>51.000₫</strong>
-                    <span className={cx('home-prodcut-discount-price-1')}>56.500₫</span>
-                    <label>
-                      <Badge pill className={cx('home-prodcut-discount-price-2')}>
-                        -14%
-                      </Badge>
-                    </label>
-                  </div>
-                  <div className={cx('home-prodcut-discount-button')}>
-                    <Button className={cx('home-prodcut-discount-button-1')}>Light</Button>
-                  </div>
-                </Col>
-                <Col sm={3}>
-                  <div className={cx('home-prodcut-discount-img')}>
-                    <Image
-                      className="d-block w-100"
-                      src="https://cdn.tgdd.vn/Products/Images/7082/172180/bhx/suon-non-chay-an-nhien-goi-150g-202205231701390268_300x300.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className={cx('home-prodcut-discount-name')}>
-                    <span> tram minh nhuut </span>
-                  </div>
-                  <div className={cx('home-prodcut-discount-price')}>
-                    <strong>51.000₫</strong>
-                    <span className={cx('home-prodcut-discount-price-1')}>56.500₫</span>
-                    <label>
-                      <Badge pill className={cx('home-prodcut-discount-price-2')}>
-                        -14%
-                      </Badge>
-                    </label>
-                  </div>
-                  <div className={cx('home-prodcut-discount-button')}>
-                    <Button className={cx('home-prodcut-discount-button-1')}>Light</Button>
-                  </div>
-                </Col>
+                {data.map((product, index) => (
+                  <Col sm={3} key={index}>
+                    <div className={cx('home-prodcut-discount-img')}>
+                      <Image
+                        className="d-block w-100"
+                        src="https://cdn.tgdd.vn/Products/Images/7082/172180/bhx/suon-non-chay-an-nhien-goi-150g-202205231701390268_300x300.jpg"
+                        alt=""
+                      />
+                    </div>
+                    <div className={cx('home-prodcut-discount-name')}>
+                      <span> {product.product_name} </span>
+                    </div>
+                    <div className={cx('home-prodcut-discount-price')}>
+                      <strong> {product.product_price}</strong>
+                      <span className={cx('home-prodcut-discount-price-1')}>56.500₫</span>
+                      <label>
+                        <Badge pill className={cx('home-prodcut-discount-price-2')}>
+                          -14%
+                        </Badge>
+                      </label>
+                    </div>
+                    <div className={cx('home-prodcut-discount-button')}>
+                      <Button
+                        onClick={() => onAddCart(product.product_id)}
+                        className={cx('home-prodcut-discount-button-1')}
+                      >
+                        Mua
+                      </Button>
+                    </div>
+                  </Col>
+                ))}
               </Row>
             </Container>
           </div>

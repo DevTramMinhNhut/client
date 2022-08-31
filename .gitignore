@@ -12,6 +12,7 @@
 /build
 
 /.vscode
+/src/apifect
 
 # misc
 .DS_Store
