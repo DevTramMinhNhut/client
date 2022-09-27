@@ -9,7 +9,6 @@
   background-image: url('../../assets/images/login.jpg');
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  /* background-position: right top; */
   object-fit: contain;
   position: relative;
   margin: 0 auto;
@@ -41,9 +40,9 @@
 }
 
 .form-control-login {
-  position: relative;
-  left: 300px !important;
+  left: 50px !important;
   margin-top: 10px;
+  width: 40% !important;
 }
 .btn-login {
   position: relative;

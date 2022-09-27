@@ -19,7 +19,7 @@
   top: 20px;
   background-color: rgb(255, 255, 255);
   width: 1040px;
-  height: 15%;
+  height: 150px;
   display: block;
   overflow: hidden;
 }
@@ -56,18 +56,13 @@
   padding: 10px;
 }
 
-.list-group-item:first-child {
-  /* border-bottom: none !important; */
-  border: none !important;
-}
-
 .home-prodcut-discount {
   position: relative;
   left: 25px;
   top: 35px;
   background-color: rgb(255, 255, 255);
   width: 1040px;
-  height: 39%;
+  height: 630px;
   display: block;
   overflow: hidden;
 }
@@ -119,13 +114,13 @@
 .home-prodcut-discount-button-1 {
   --bs-btn-color: none !important;
   background-color: transparent !important;
-  border: 2px solid #8ae242 !important;
+  border: 1px solid #030303 !important;
   width: 200px;
 }
 
 .home-prodcut-discount-button-1:hover {
   color: #333 !important;
-  background-color: wheat !important;
+  background-color: none !important;
 }
 
 .home-prodcut-all {
@@ -134,7 +129,7 @@
   top: 45px;
   background-color: rgb(255, 255, 255);
   width: 1040px;
-  height: 40%;
+  height: 945px;
   display: block;
   overflow: hidden;
 }

@@ -18,27 +18,45 @@ import product from '../../apifect/product.json';
 const cx = classNames.bind(style);
 
 function Home() {
-  const [data, setData] = useState([]);
+  const [show, setShow] = useState(false);
 
-  const [cartItem, setCartItem] = useState([]);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     setData(product.products);
   }, []);
 
   const onAddCart = (product_id) => {
+    let carts = [];
     const product = data.find((x) => x.product_id === product_id);
-    const exits = cartItem.find((x) => x.product_id === product_id);
-    if (exits) {
-      setCartItem(cartItem.map((x) => (x.product_id === product_id ? { ...exits, qty: exits.qty + 1 } : x)));
-    } else {
-      setCartItem([...cartItem, { ...product, qty: 1 }]);
+
+    const getCart = localStorage.getItem('cart');
+
+    if (getCart) {
+      carts = JSON.parse(getCart);
     }
+    let exits = carts.find((x) => {
+      return x.product_id === product_id;
+    });
+    if (exits) {
+      exits.qty = exits.qty + 1;
+    } else {
+      carts.push({
+        product_id: product.product_id,
+        category_id: product.category_id,
+        product_describe: product.product_describe,
+        product_name: product.product_name,
+        product_price: Number(product.product_price),
+        product_saleprice: Number(product.product_saleprice),
+        provider: product.provider,
+        qty: 1,
+      });
+    }
+    localStorage.setItem('cart', JSON.stringify(carts));
   };
-  useEffect(() => {
-    if (cartItem !== '') console.log(cartItem);
-    localStorage.setItem('cart', JSON.stringify(cartItem));
-  }, [cartItem]);
 
   return (
     <Container fluid="md">

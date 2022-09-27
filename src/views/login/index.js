@@ -6,6 +6,15 @@ import Form from 'react-bootstrap/Form';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
+// fb
+import FacebookLogin from 'react-facebook-login';
+
+//google
+import { GoogleLogin } from 'react-google-login';
+import { gapi } from 'gapi-script';
+
+// api
+import * as customerApi from '../../api/customer';
 const cx = classNames.bind(style);
 
 function Login() {
@@ -15,19 +24,18 @@ function Login() {
   const [isCheck, setIsCheck] = useState(false);
   let navigate = useNavigate();
 
+  // call api
+  const [customer, setCustomer] = useState([]);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const data = await customerApi.get('customer');
+      setCustomer(data.customers);
+    };
+    fetchAPI();
+  }, []);
+
   const renderErrorMessage = (name) =>
     name === errorMessages.name && <div className="error">{errorMessages.message}</div>;
-
-  const database = [
-    {
-      username: 'user1',
-      password: '1',
-    },
-    {
-      username: 'user2',
-      password: 'pass2',
-    },
-  ];
 
   const errors = {
     uname: 'invalid username',
@@ -46,31 +54,91 @@ function Login() {
     event.preventDefault();
     var { uname, pass } = document.forms[0];
     // Find user login info
-    const userData = database.find((user) => user.username === uname.value);
+    for (let i = 0; i <= customer.length; i++) {
+      const check = customer[i]?.account;
+      // Compare user info
+      if (check) {
+        console.log(check.username);
+        if (check.username === uname.value) {
+          if (check.password !== pass.value) {
+            // Invalid password
+            setErrorMessages({ name: 'pass', message: errors.pass });
+          } else {
+            setIsSubmitted(true);
+            let time = new Date();
+            check.time = time.setHours(time.getDate() + 7);
+            if (isCheck === true) {
+              check.time = time.setHours(time.getDate() + 7);
+            } else {
+              check.time = time.setHours(time.getDate());
+            }
+            localStorage.removeItem('authorGoogle');
+            localStorage.removeItem('authorFb');
+            localStorage.setItem('author', JSON.stringify(check));
 
-    // Compare user info
-    if (userData) {
-      if (userData.password !== pass.value) {
-        // Invalid password
-        setErrorMessages({ name: 'pass', message: errors.pass });
-      } else {
-        setIsSubmitted(true);
-        let time = new Date();
-        userData.time = time.setHours(time.getDate() + 7);
-        if (isCheck === true) {
-          userData.time = time.setHours(time.getDate() + 7);
+            // navigate('/');
+          }
         } else {
-          userData.time = time.setHours(time.getDate());
+          // Username not found
+          setErrorMessages({ name: 'uname', message: errors.uname });
         }
+      }
+    }
+  };
 
-        localStorage.setItem('author', JSON.stringify(userData));
-
+  const authLogin = {
+    userID: '',
+    name: '',
+    picture: '',
+  };
+  // fb
+  const [login, setLogin] = useState(false);
+  const [data, setData] = useState({});
+  const responseFacebook = (response) => {
+    setData(response);
+    if (response.accessToken) {
+      setLogin(true);
+      authLogin.userID = data.userID;
+      authLogin.name = data.name;
+      authLogin.picture = data.picture.data.url;
+      localStorage.removeItem('authorGoogle');
+      localStorage.setItem('authorFb', JSON.stringify(authLogin));
+      if (localStorage.getItem('authorFb')) {
         navigate('/');
       }
     } else {
-      // Username not found
-      setErrorMessages({ name: 'uname', message: errors.uname });
+      setLogin(false);
     }
+  };
+
+  //google
+  const clientId = '97039270207-qq1mmr8n3hk41va78brkhhej0jeqikrr.apps.googleusercontent.com';
+  // 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
+
+  useEffect(() => {
+    const initClient = () => {
+      gapi.client.init({
+        clientId: clientId,
+        scope: '',
+      });
+    };
+    gapi.load('client:auth2', initClient);
+  });
+
+  const onSuccess = (res) => {
+    console.log('success:', res);
+    authLogin.userID = res.profileObj.googleId;
+    authLogin.name = res.profileObj.name;
+    authLogin.picture = res.profileObj.imageUrl;
+    localStorage.removeItem('authorFb');
+    localStorage.setItem('authorGoogle', JSON.stringify(authLogin));
+    if (localStorage.getItem('authorGoogle')) {
+      navigate('/');
+    }
+    console.log('success:', res);
+  };
+  const onFailure = (err) => {
+    console.log('failed:', err);
   };
 
   return (
@@ -113,16 +181,23 @@ function Login() {
         <span className={cx('or')}> OR </span>
 
         <div className={cx('login-fbOrgoogle btn-login')}>
-          <NavLink to="/fb">
-            <Button className={cx('login-fb')} variant="outline-primary">
-              FaceBook
-            </Button>
-          </NavLink>
-          <NavLink to="/google">
-            <Button className={cx('login-google')} variant="outline-danger">
-              Goole
-            </Button>
-          </NavLink>
+          <FacebookLogin
+            appId="940619409929205"
+            autoLoad={false}
+            fields="name,email,picture"
+            scope="public_profile,user_friends"
+            callback={responseFacebook}
+            cssClass="my-facebook-button-class"
+            icon="fa-facebook"
+          />
+          <GoogleLogin
+            clientId={clientId}
+            buttonText="Sign in with Google"
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={false}
+          />
         </div>
       </div>
     </div>
