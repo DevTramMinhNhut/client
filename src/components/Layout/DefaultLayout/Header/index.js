@@ -10,9 +10,9 @@ import Badge from 'react-bootstrap/Badge';
 import Tippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import Image from '../../../Image';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useDebounce from '../../../../hooks/useDebounce';
 
 //icon
@@ -26,11 +26,22 @@ import * as search from '../../../../api/search';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { Button } from 'react-bootstrap';
 
+//components
+import ModalLogin from '../../../ModalLogin/index.js';
+import { checkCart } from '../index';
+
 const cx = classNames.bind(style);
 
 function Header() {
+  const checkCartButton = useContext(checkCart);
   const { transcript, resetTranscript } = useSpeechRecognition();
   const [speech, setSpeech] = useState(false);
+
+  const [kqtimkiem, setKqtimkiem] = useState([]);
+  const [showKq, setShowKq] = useState(true);
+  const [searchValue, setSearchValue] = useState('');
+
+  const [showModal, setShowModal] = useState(false);
 
   const checkSpeechOn = () => {
     setSpeech(true);
@@ -39,28 +50,35 @@ function Header() {
     resetTranscript();
     setSpeech(false);
   };
+  // eslint-disable-next-line
   const [content, setContent] = useState(null);
 
   useEffect(() => {
     setContent(transcript);
   }, [transcript]);
 
-  console.log(content);
   // user
   const [isUser, setIsUser] = useState({});
   const [currentUser, setCurrentUser] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('author'));
-    if (user) {
-      setIsUser(user);
+    let author = JSON.parse(localStorage.getItem('author'));
+    let userFb = JSON.parse(localStorage.getItem('authorFb'));
+    let userGoogle = JSON.parse(localStorage.getItem('authorGoogle'));
+    if (author) {
+      setIsUser(author);
       setCurrentUser(true);
     }
-  }, []);
-
-  const [kqtimkiem, setKqtimkiem] = useState([]);
-  const [showKq, setShowKq] = useState(true);
-  const [searchValue, setSearchValue] = useState('');
+    if (userFb) {
+      setIsUser(userFb);
+      setCurrentUser(true);
+    }
+    if (userGoogle) {
+      setIsUser(userGoogle);
+      setCurrentUser(true);
+    }
+    // eslint-disable-next-line no-use-before-define
+  }, [currentUser, showModal]);
 
   const inputRef = useRef();
   const debounced = useDebounce(searchValue, 400);
@@ -83,30 +101,43 @@ function Header() {
   };
 
   //Cart
-
   const [cartItemSumQty, setCartItemSumQty] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [cartItem, setCartItem] = useState([]);
-  const [cartItemTotal, setCartItemTotal] = useState();
+  const [cartItemTotal, setCartItemTotal] = useState(0);
 
+  let total = 0;
   useEffect(() => {
-    setInterval(() => {
-      const cartItem = JSON.parse(localStorage.getItem('cart'));
-      setCartItem(cartItem);
-    }, 100);
-  }, []);
-  useEffect(() => {
-    let total = 0;
-    if (cartItem) {
-      setCartItemSumQty(cartItem.length);
-      cartItem.map((item) => (total += item.product_price));
-      console.log(total);
+    const checkCart = async () => {
+      const cartItemCheck = await JSON.parse(localStorage.getItem('cart'));
+      setCartItem(cartItemCheck);
+      setCartItemSumQty(cartItemCheck.length);
+      // eslint-disable-next-line array-callback-return
+      cartItemCheck.map((item) => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        total += item.product_price;
+      });
       setCartItemTotal(total);
-    } else {
-      setCartItemSumQty(0);
-      setCartItemTotal(total);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartItem]);
+    };
+    checkCart();
+  }, [checkCartButton]);
+
+  const handleShow = () => setShowModal(true);
+
+  const navigate = useNavigate();
+  const goToPosts = async (event) => {
+    event.preventDefault();
+    navigate({
+      pathname: '/search/product/',
+      search: `name=${searchValue ? searchValue : transcript}`,
+    });
+  };
+
+  const logOut = () => {
+    localStorage.removeItem('author');
+    localStorage.removeItem('authorFb');
+    localStorage.removeItem('authorGoogle');
+  };
 
   return (
     <header className={cx('default-header-wrapper')}>
@@ -130,53 +161,49 @@ function Header() {
               <Nav.Link className={cx('header-link')} href="">
                 Hổ Trợ
               </Nav.Link>
-              <Nav.Link>
-                <HeadlessTippy
-                  visible={showKq && kqtimkiem.length > 0}
-                  interactive
-                  render={(attrs) => (
-                    <div className={cx('timkiem-ketqua')} tabIndex="-1" {...attrs}>
-                      {kqtimkiem.map((result) => (
-                        <Link to={`/@${result.nickname}`} key={result.id} className={cx('timkiem-ketqua-content')}>
-                          <Image className={cx('timkiem-ketqua-img')} src={result.avatar} alt="loi" />
-                          <div className={cx('timkiem-ketqua-name')}>
-                            <h6 className={cx('timkiem-ketqua-name-product')}> {result.full_name} </h6>
-                          </div>
-                        </Link>
-                      ))}
-                      <div className={cx('timkiem-ketqua-content')}>
+              <HeadlessTippy
+                visible={showKq && kqtimkiem.length > 0}
+                interactive
+                render={(attrs) => (
+                  <div className={cx('timkiem-ketqua')} tabIndex="-1" {...attrs}>
+                    {kqtimkiem.map((result, index) => (
+                      <Link
+                        onClick={() => setShowKq(false)}
+                        to={`/detail/product/${result.product_id}`}
+                        key={index}
+                        className={cx('timkiem-ketqua-content')}
+                      >
                         <Image
                           className={cx('timkiem-ketqua-img')}
-                          src="https://cdn.tgdd.vn/Products/Images/8788/245528/bhx/dua-hau-giong-my-tui-2kg-202107101612531155.jpg"
+                          src={`http://127.0.0.1:8887//${result.images[0]?.image_name}`}
                           alt="loi"
                         />
                         <div className={cx('timkiem-ketqua-name')}>
-                          <h6 className={cx('timkiem-ketqua-name-product')}> Dưa hấu </h6>
+                          <h6 className={cx('timkiem-ketqua-name-product')}> {result.product_name} </h6>
                         </div>
-                      </div>
-                    </div>
-                  )}
-                  onClickOutside={handleHidenKq}
-                >
-                  <Form className="d-flex">
-                    <Form.Control
-                      className={cx('default-header-wrapper-search me-2')}
-                      ref={inputRef}
-                      type="search"
-                      defaultValue={transcript}
-                      placeholder="Tìm kiếm sản phẩm"
-                      aria-label="Search"
-                      onChange={(e) => setSearchValue(e.target.value)}
-                      onFocus={() => setShowKq(true)}
-                    />
-                    <Tippy content="Tìm kiếm">
-                      <div className={cx('div-icon-tim-kiem')}>
-                        <CgSearchFound className={cx('icon-tim-kiem')} />
-                      </div>
-                    </Tippy>
-                  </Form>
-                </HeadlessTippy>
-              </Nav.Link>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                onClickOutside={handleHidenKq}
+              >
+                <Form className="d-flex" onSubmit={goToPosts}>
+                  <Form.Control
+                    className={cx('default-header-wrapper-search me-2')}
+                    ref={inputRef}
+                    type="search"
+                    defaultValue={transcript}
+                    placeholder="Tìm kiếm sản phẩm"
+                    aria-label="Search"
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onFocus={() => setShowKq(true)}
+                  />
+
+                  <div type="submit" onClick={goToPosts} className={cx('div-icon-tim-kiem')}>
+                    <CgSearchFound className={cx('icon-tim-kiem')} />
+                  </div>
+                </Form>
+              </HeadlessTippy>
               <Nav.Link className={cx('icon-mic')}>
                 {speech === false ? (
                   <Button
@@ -217,7 +244,12 @@ function Header() {
                     <div className={cx('header-cart')}>
                       <BsCart2 size={38} color={'white'} />
                       <span className={cx('header-cart-number')}>{cartItemSumQty}</span>
-                      <Badge bg="danger">{cartItemTotal} đ</Badge>
+                      <Badge bg="danger">
+                        {cartItemTotal.toLocaleString('vi', {
+                          style: 'currency',
+                          currency: 'VND',
+                        })}{' '}
+                      </Badge>
                     </div>
                   </Tippy>
                 </Link>
@@ -231,13 +263,16 @@ function Header() {
                   menuVariant="light"
                   autoClose="outside"
                   drop="start"
+                  active="true"
                   enable-caret="true"
                 >
-                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.1">Thông tin cá nhân</NavDropdown.Item>
+                  <NavDropdown.Item href="/cart">Giỏ hàng</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">Đơn hàng</NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                  <NavDropdown.Item href="/" onClick={logOut}>
+                    Thoát
+                  </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             ) : (
@@ -246,7 +281,8 @@ function Header() {
                   Đăng Ký
                 </Nav.Link>
                 <Nav className="gachngang"> | </Nav>
-                <Nav.Link className={cx('register-login-login')} href="./login">
+                <Nav.Link onClick={handleShow} className={cx('register-login-login')}>
+                  {' '}
                   Đăng Nhập
                 </Nav.Link>
               </Nav>
@@ -254,8 +290,9 @@ function Header() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      {showModal ? <ModalLogin setShowModal={setShowModal} /> : <></>}
     </header>
   );
 }
-
 export default Header;

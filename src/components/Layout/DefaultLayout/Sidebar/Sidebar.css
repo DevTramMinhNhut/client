@@ -21,3 +21,11 @@
 .default-sidebar-menu-link {
   text-decoration: none;
 }
+
+.item-menu-favorite {
+  height: 60px;
+}
+
+.item-menu-favorite-content:hover {
+  color: #cccccc;
+}

@@ -2,24 +2,37 @@ import classNames from 'classnames/bind';
 import style from './Cart.css';
 
 import { Breadcrumb, Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import Image from '../../components/Image';
 import { FcShipped } from 'react-icons/fc';
-import { useState, useEffect } from 'react';
-
+import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
 const cx = classNames.bind(style);
 
 function Cart() {
+  const checkCartButton = useContext(onClickCheckCart);
   const [cartItem, setCartItem] = useState([]);
-
-  // const [quantity, setQuantity] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     if (cartItem) {
       let local = localStorage.getItem('cart');
       setCartItem(JSON.parse(local));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    let sumCart = 0;
+    cartItem.map(
+      (item) =>
+        (sumCart += (item.product_price - (item.discount_percent / 100) * item.product_price) * item.qty + 15000),
+    );
+    if (sumCart !== 0) {
+      setTotal(sumCart);
+    }
+  }, [total, cartItem]);
 
   const addQuantity = (product_id) => {
     const exits = cartItem.find((x) => x.product_id === product_id);
@@ -49,6 +62,54 @@ function Cart() {
     localStorage.setItem('cart', JSON.stringify(listItemOther));
   };
 
+  let detailCart = [];
+
+  const addCartApi = () => {
+    const agreeDelete = window.confirm(`Bạn có muốn mua sản phẩm không ??`);
+    if (agreeDelete) {
+      // for (let i = 0; i <= cartItem.length - 1; i++) {
+      // eslint-disable-next-line array-callback-return
+      cartItem.map((item) => {
+        detailCart = [
+          ...detailCart,
+          {
+            product_id: item.product_id,
+            detail_quantity: item.qty,
+            detail_price: item.discount_percent > 0 ? item.product_price * item.discount_percent : item.product_price,
+          },
+        ];
+      });
+      // }
+    }
+    console.log(detailCart);
+    // axios
+    //   .post(`http://localhost:3000/order/`, {
+    //     customer_id: 1,
+    //     order_total: total,
+    //     order_payment: 'Trực Tiếp',
+    //     detail_quantity: item.qty,
+    //     detail_price: item.discount_percent > 0 ? item.product_price * item.discount_percent : item.product_price,
+    //     product_id: item.product_id,
+    //   })
+    //   .then((res) => {
+    //     toast('Create orders success', {
+    //       position: 'top-right',
+    //       autoClose: 2000,
+    //       hideProgressBar: false,
+    //       closeOnClick: true,
+    //       pauseOnHover: false,
+    //       draggable: true,
+    //       progress: undefined,
+    //     });
+    //     setTimeout(() => {
+    //       // navigate('/categories/');
+    //     }, 3000);
+    //   })
+    //   .catch((err) => {
+    //     toast.error('Create order failed');
+    //   });
+  };
+
   return (
     <Container fluid="md">
       <div>
@@ -71,14 +132,42 @@ function Cart() {
               <div className={cx('home-cart-content-product')}>
                 <Image
                   className={cx('home-cart-content-product-img')}
-                  src="https://cdn.tgdd.vn/Products/Images/2464/210186/bhx/nuoc-giat-omo-matic-huong-comfort-tinh-dau-thom-tui-35-lit-202206140957520746_300x300.jpg"
+                  src={`http://127.0.0.1:8887//${product.image}`}
                   alt="loi"
                 />
                 <div className={cx('home-cart-content-product-title')}>{product.product_name}</div>
                 <div className={cx('home-cart-content-product-price')}>
-                  {' '}
-                  <strong>{product.product_price}</strong> <br />
-                  <span className={cx('price-discount')}>99.000₫</span>
+                  {product.discount_percent > 0 ? (
+                    <>
+                      <strong>
+                        {(
+                          (product.product_price - (product.discount_percent * product.product_price) / 100) *
+                          product.qty
+                        ).toLocaleString('vi', {
+                          style: 'currency',
+                          currency: 'VND',
+                        })}
+                      </strong>
+                      <br />
+                      <span className={cx('price-discount')}>
+                        {' '}
+                        {(product.product_price * product.qty).toLocaleString('vi', {
+                          style: 'currency',
+                          currency: 'VND',
+                        })}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <strong>
+                        {(product.product_price * product.qty).toLocaleString('vi', {
+                          style: 'currency',
+                          currency: 'VND',
+                        })}
+                      </strong>
+                      <br />
+                    </>
+                  )}
                 </div>
               </div>
               <div className={cx('home-cart-content-quantity')}>
@@ -87,14 +176,20 @@ function Cart() {
                     -
                   </button>
                   <Form.Group controlId="formBasicEmail">
-                    <Form.Control type="text" value={product.qty} />
+                    <Form.Control type="text" value={product.qty} readOnly />
                   </Form.Group>
                   <button onClick={() => addQuantity(product.product_id)} className={cx('noselect-1')}>
                     +
                   </button>
                 </div>
 
-                <button onClick={() => onClickDelete(product.product_id)} className={cx('delete')}>
+                <button
+                  onClick={() => {
+                    onClickDelete(product.product_id);
+                    checkCartButton();
+                  }}
+                  className={cx('delete')}
+                >
                   Xóa
                 </button>
               </div>
@@ -103,14 +198,6 @@ function Cart() {
 
           <div className={cx('home-cart-content-2')}>
             <div className={cx('home-cart-content-2-price')}>
-              <div className={cx('home-cart-content-2-price-1 mb-2')}>
-                <span> Tiền hàng:</span>
-                <label> 188.000₫ </label>
-              </div>
-              <div className={cx('home-cart-content-2-price-2 mb-2')}>
-                <span> Hàng khuyến mãi:</span>
-                <label> 49.000₫ </label>
-              </div>
               <div className={cx('home-cart-content-2-price-3 mb-2')}>
                 <span style={{ color: '#0081bd' }}>
                   {' '}
@@ -120,10 +207,29 @@ function Cart() {
               </div>
               <div className={cx('home-cart-content-2-price-3')}>
                 <span> Tổng đơn hàng:</span>
-                <label> 252.000₫ </label>
+                <label>
+                  {' '}
+                  {total.toLocaleString('vi', {
+                    style: 'currency',
+                    currency: 'VND',
+                  })}{' '}
+                </label>
               </div>
             </div>
-            <Button variant="outline-dark">Mua sản phẩm</Button>
+            <Button variant="outline-dark" onClick={addCartApi}>
+              Mua sản phẩm
+            </Button>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover={false}
+            />
           </div>
         </Col>
         <Col sm={4}></Col>

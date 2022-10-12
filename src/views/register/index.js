@@ -58,6 +58,7 @@ function Register() {
           {
             username: userData.username,
             password: userData.password,
+            type: 'normal',
           },
           {
             headers: {
