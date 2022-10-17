@@ -144,11 +144,11 @@
 }
 
 .detail-product-comment {
-  position: relative;
-  left: 25px;
-  top: 30px;
+  margin-left: 13px !important;
+  margin-top: 30px !important;
+  margin-bottom: 30px !important;
+
   width: 1014px;
-  height: 300px;
   background-color: #fff;
 }
 

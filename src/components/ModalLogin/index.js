@@ -5,9 +5,10 @@ import Modal from 'react-bootstrap/Modal';
 
 import style from './Login.css';
 import classNames from 'classnames/bind';
-import { useNavigate, NavLink } from 'react-router-dom';
-import { useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import axios from 'axios';
+import bcrypt from 'bcryptjs';
 
 // fb
 import FacebookLogin from 'react-facebook-login';
@@ -28,72 +29,82 @@ const ModalLogin = ({ setShowModal }) => {
     setShowModal(false);
   };
 
-  //login
-  const [errorMessages, setErrorMessages] = useState({});
-  // eslint-disable-next-line no-unused-vars
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  let navigate = useNavigate();
-
   // call api
   const [customer, setCustomer] = useState([]);
+
   const customerUsername = [];
   useEffect(() => {
     const fetchAPI = async () => {
-      const data = await customerApi.get('customer');
+      const data = await customerApi.get('customer?limit=10000');
       setCustomer(data.customers);
     };
     fetchAPI();
   }, []);
-  const renderErrorMessage = (name) =>
-    name === errorMessages.name && <div className="error">{errorMessages.message}</div>;
 
-  const errors = {
-    uname: 'invalid username',
-    pass: 'invalid password',
-  };
-
-  const handleSubmit = (event) => {
-    // Prevent page reload
-    event.preventDefault();
-    var { uname, pass } = document.forms[0];
-    // Find user login info
-    for (let i = 0; i <= customer.length; i++) {
-      const check = customer[i]?.account;
-      // Compare user info
-      if (check) {
-        if (check.username === uname.value) {
-          if (check.password !== pass.value) {
-            // Invalid password
-            setErrorMessages({ name: 'pass', message: errors.pass });
-          } else {
-            setIsSubmitted(true);
-            localStorage.removeItem('authorGoogle');
-            localStorage.removeItem('authorFb');
-            localStorage.setItem('author', JSON.stringify(check));
-            if (localStorage.getItem('author')) {
-              navigate('/');
-            }
-          }
-        } else {
-          // Username not found
-          setErrorMessages({ name: 'uname', message: errors.uname });
-        }
-      }
-    }
+  const [form, setForm] = useState({});
+  const [errors, setErrors] = useState({});
+  const setField = (field, value) => {
+    setForm({
+      ...form,
+      [field]: value,
+    });
+    if (!!errors[field])
+      setErrors({
+        ...errors,
+        [field]: null,
+      });
   };
 
   const authLogin = {
-    userID: '',
+    id: '',
     username: '',
-    picture: '',
+  };
+  // const [checkId, setCheckId] = useState(false);
+  const findFormErrors = () => {
+    const { username, password } = form;
+    const newErrors = {};
+    // name errors
+    // Find user login info
+    var checkUsername = [];
+    for (let i = 0; i <= customer.length; i++) {
+      checkUsername.push(customer[i]?.account.username);
+      const check = customer[i]?.account;
+      const checkId = customer[i]?.customer_id;
+      if (check) {
+        if (checkUsername.includes(username) === true) {
+          if (check.username === username) {
+            authLogin.id = checkId;
+          }
+          const checkPassword = bcrypt.compareSync(password, check.password);
+          if (checkPassword === false) {
+            newErrors.password = 'Mật khẩu không đúng vui lòng nhập lại';
+          }
+        }
+      }
+    }
+    if (checkUsername.includes(username) === false) {
+      newErrors.username = 'Tên đăng nhập không tồn tại';
+    }
+
+    return newErrors;
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newErrors = findFormErrors();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
+      authLogin.username = form.username;
+      event.preventDefault();
+      localStorage.setItem('author', JSON.stringify(authLogin));
+      setShowModal(false);
+    }
   };
   // fb
   const responseFacebook = (response) => {
-    authLogin.userID = response.userID;
+    authLogin.id = response.userID;
     authLogin.username = response.name;
-    authLogin.picture = response.picture.url;
-    localStorage.removeItem('authorGoogle');
-    localStorage.setItem('authorFb', JSON.stringify(authLogin));
+    localStorage.setItem('author', JSON.stringify(authLogin));
     for (let i = 0; i <= customer.length; i++) {
       const check = customer[i]?.account;
       if (check) {
@@ -144,11 +155,9 @@ const ModalLogin = ({ setShowModal }) => {
   });
 
   const onSuccess = (res) => {
-    authLogin.userID = res.profileObj.googleId;
+    authLogin.id = res.profileObj.googleId;
     authLogin.username = res.profileObj.name;
-    authLogin.picture = res.profileObj.imageUrl;
-    localStorage.removeItem('authorFb');
-    localStorage.setItem('authorGoogle', JSON.stringify(authLogin));
+    localStorage.setItem('author', JSON.stringify(authLogin));
     for (let i = 0; i <= customer.length; i++) {
       const check = customer[i]?.account;
       if (check) {
@@ -194,24 +203,38 @@ const ModalLogin = ({ setShowModal }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group className="mb-4" controlId="formBasicEmail">
             <Form.Label>Tên đăng nhập</Form.Label>
-            <Form.Control type="text" placeholder="Tên đăng nhập" name="uname" required />
-            {renderErrorMessage('uname')}
+            <Form.Control
+              type="text"
+              placeholder="Tên đăng nhập"
+              name="username"
+              onChange={(e) => setField('username', e.target.value)}
+              required
+              isInvalid={!!errors.username}
+            />
+            <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Group className="mb-4" controlId="formBasicPassword">
             <Form.Label>Mật khẩu</Form.Label>
-            <Form.Control type="password" name="pass" placeholder="Mật khẩu" required />
-            {renderErrorMessage('pass')}
+            <Form.Control
+              type="password"
+              onChange={(e) => setField('password', e.target.value)}
+              name="password"
+              placeholder="Mật khẩu"
+              required
+              isInvalid={!!errors.password}
+            />
+            <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
           </Form.Group>
           <div className="mb-2 modal-Login">
-            <Button type="submit" variant="success">
+            <Button type="submit" style={{ width: '200px' }} variant="success">
               Đăng nhập
             </Button>
             <span>
               Đăng ký tài khoản&nbsp;
-              <NavLink to="/register">Tại Đây.</NavLink>
+              <Link to="/register">Tại Đây.</Link>
             </span>
           </div>
         </Form>

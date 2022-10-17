@@ -7,7 +7,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Carousel from 'react-bootstrap/Carousel';
 import { IoReloadCircleOutline } from 'react-icons/io5';
 import { FcAlarmClock } from 'react-icons/fc';
-import { AiFillLike } from 'react-icons/ai';
+import { AiFillLike, AiFillStar } from 'react-icons/ai';
 import { FcCheckmark } from 'react-icons/fc';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
@@ -19,6 +19,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 const cx = classNames.bind(style);
 
@@ -26,6 +28,10 @@ function DetailProduct() {
   const { product_id } = useParams();
   const [product, setProduct] = useState({});
   const [products, setProducts] = useState();
+  const [idAccount, setIdAccount] = useState();
+  const [checkComment, setCheckComment] = useState(false);
+  const [starComment, setStarComment] = useState(1);
+
   const images = [];
   let navigate = useNavigate();
 
@@ -45,7 +51,17 @@ function DetailProduct() {
       setComments(data.comments);
     };
     fetchAPI();
-  }, [product_id]);
+  }, [product_id, checkComment]);
+
+  useEffect(() => {
+    const local = async () => {
+      const data = await localStorage.getItem('author');
+      if (data) {
+        setIdAccount(JSON.parse(data));
+      }
+    };
+    local();
+  }, []);
 
   if (product.images) {
     product.images.map((item) => images.push(item.image_name));
@@ -65,26 +81,27 @@ function DetailProduct() {
       .post(`http://localhost:3000/comment/`, {
         comment_content: content,
         product_id: product_id,
-        customer_id: 1,
+        customer_id: idAccount.id,
       })
       .then((res) => {
         if (res) {
-          toast.success('Comment success', {
+          toast.success('Bạn đã bình luân sản phẩm thành công', {
             position: 'top-right',
-            autoClose: 2000,
+            autoClose: 1000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
             draggable: true,
             progress: undefined,
           });
+          setCheckComment(!checkComment);
         }
       })
       .catch((err) => {
         if (err) {
-          toast.error('Comment failed', {
+          toast.error('Vui lòng đăng nhập để bình luận', {
             position: 'top-right',
-            autoClose: 2000,
+            autoClose: 1000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
@@ -122,6 +139,32 @@ function DetailProduct() {
     localStorage.setItem('cart', JSON.stringify(carts));
     alert(`Bạn đã thêm sản phẩm ${product.product_name} vào giỏ hàng thành công`);
     navigate('/cart');
+  };
+
+  const deleteComment = (comment_id) => {
+    const arrayComments = [];
+    comments.forEach((item) => {
+      if (item.comment_id === comment_id && item.customer_id === idAccount.id) {
+        arrayComments.push(item);
+      }
+    });
+    if (arrayComments.length > 0) {
+      const agreeDelete = window.confirm(`Bạn có muốn xóa bình luận này không ??`);
+      if (agreeDelete) {
+        axios.delete(`http://localhost:3000/comment/${comment_id}`);
+        setCheckComment(!checkComment);
+      }
+    } else {
+      toast.error('Bạn cần đăng nhập hoặc có quyền để xoá bình luận này', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   return (
@@ -163,7 +206,7 @@ function DetailProduct() {
                 currency: 'VND',
               })}
             </strong>
-            <span class="strike">220.000₫</span>
+            <span className="strike">220.000₫</span>
             <label>-19%</label>
             <span style={{ float: 'right' }}>Kho: {product.storage?.product_quantity} sản phẩm</span>
           </div>
@@ -280,10 +323,18 @@ function DetailProduct() {
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
                     <div>
-                      - {comment.customer?.customer_name}: {comment.comment_content}
+                      -{' '}
+                      <span style={{ fontSize: '16px', fontWeight: '600 ' }}>
+                        {' '}
+                        {comment.customer?.customer_name.toUpperCase()}
+                      </span>{' '}
+                      : {comment.comment_content}
                     </div>
                     <div>
-                      {comment.createdAt} <Button variant="danger">Xoá</Button>
+                      {moment(comment.createdAt).utc().format('DD-MM-YYYY H:mm:ss')}{' '}
+                      <Button variant="danger" onClick={() => deleteComment(comment.comment_id)}>
+                        Xoá
+                      </Button>
                     </div>
                   </Col>
                 ))}
@@ -298,24 +349,82 @@ function DetailProduct() {
                 style={{ height: '100px' }}
               />
             </FloatingLabel>
-            <Button variant="success" onClick={() => comment()}>
+            <span> Đánh giá số sao sản phẩm </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Form.Control
+                style={{ width: '200px' }}
+                className="mb-2 mt-2"
+                size="sm"
+                type="number"
+                min="1"
+                max="5"
+                value={starComment}
+                onChange={(e) => setStarComment(e.target.value)}
+                placeholder="Đánh giá số sao"
+              />
+
+              <ProgressBar style={{ width: '600px' }}>
+                <ProgressBar
+                  style={{ alignItems: 'center', width: '120px' }}
+                  label={<AiFillStar />}
+                  now={starComment * 10 * 2}
+                  key={starComment}
+                />
+                {starComment > 1 ? (
+                  <ProgressBar
+                    style={{ alignItems: 'center', width: '120px' }}
+                    label={<AiFillStar />}
+                    now={starComment * 10 * 2}
+                  />
+                ) : (
+                  <></>
+                )}
+                {starComment > 2 ? (
+                  <ProgressBar
+                    style={{ alignItems: 'center', width: '120px' }}
+                    label={<AiFillStar />}
+                    now={starComment * 10 * 2}
+                  />
+                ) : (
+                  <></>
+                )}
+                {starComment > 3 ? (
+                  <ProgressBar
+                    style={{ alignItems: 'center', width: '120px' }}
+                    label={<AiFillStar />}
+                    now={starComment * 10 * 2}
+                  />
+                ) : (
+                  <></>
+                )}
+                {starComment > 4 ? (
+                  <ProgressBar
+                    style={{ alignItems: 'center', width: '120px' }}
+                    label={<AiFillStar />}
+                    now={starComment * 10 * 2}
+                  />
+                ) : (
+                  <></>
+                )}
+                {starComment > 5 ? (
+                  <ProgressBar
+                    style={{ alignItems: 'center', width: '120px' }}
+                    label={<AiFillStar />}
+                    now={starComment * 10 * 2}
+                  />
+                ) : (
+                  <></>
+                )}
+              </ProgressBar>
+            </div>
+
+            <Button className="mb-4 mt-2" variant="success" onClick={() => comment()}>
               Bình luận sản phẩm
             </Button>
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover={false}
-            />
-            <ToastContainer />
           </div>
         </Col>
       </Row>
+      <ToastContainer />
     </Container>
   );
 }

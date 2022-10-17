@@ -14,6 +14,9 @@ import { useState, useEffect } from 'react';
 import * as productApi from '../../api/product';
 import FrameProduct from '../../components/FrameProduct';
 
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function Home() {

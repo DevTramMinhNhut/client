@@ -16,6 +16,9 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { Badge } from 'react-bootstrap';
 import { useContext } from 'react';
 
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { onClickCheckCart } from '../Layout/DefaultLayout/index';
 const cx = classNames.bind(style);
 
@@ -50,7 +53,15 @@ const FrameProduct = ({ data, discount }) => {
       });
     }
     localStorage.setItem('cart', JSON.stringify(carts));
-    alert(`Bạn đã thêm sản phẩm ${product.product_name} vào giỏ hàng thành công`);
+    toast.success(`Bạn đã thêm sản phẩm ${product.product_name} vào giỏ hàng thành công`, {
+      position: 'top-right',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+    });
   };
   const onAddFavorite = (product_id) => {
     const product = data.find((x) => x.product_id === product_id);
@@ -60,10 +71,26 @@ const FrameProduct = ({ data, discount }) => {
         customer_id: 1,
       })
       .then((res) => {
-        alert(`Bạn thêm sản phẩm ${product.product_name} vào trang yêu thích`);
+        toast(`Bạn thêm sản phẩm ${product.product_name} vào trang yêu thích`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+        });
       })
       .catch((err) => {
-        alert('Bạn đã thêm vào trang yêu thích cá nhân!');
+        toast.error(`Sản phẩm ${product.product_name} thêm vào trang yêu thích không thành công`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+        });
       });
   };
   return (
@@ -153,6 +180,7 @@ const FrameProduct = ({ data, discount }) => {
           </Col>
         ))}
       </Row>
+      <ToastContainer />
     </Container>
   );
 };

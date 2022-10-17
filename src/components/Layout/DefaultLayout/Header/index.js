@@ -29,6 +29,7 @@ import { Button } from 'react-bootstrap';
 //components
 import ModalLogin from '../../../ModalLogin/index.js';
 import { checkCart } from '../index';
+import ModalInformation from '../../../ModalInformation';
 
 const cx = classNames.bind(style);
 
@@ -42,6 +43,10 @@ function Header() {
   const [searchValue, setSearchValue] = useState('');
 
   const [showModal, setShowModal] = useState(false);
+
+  const [showInfo, setShowInfo] = useState(false);
+
+  const [step, setStep] = useState('1');
 
   const checkSpeechOn = () => {
     setSpeech(true);
@@ -63,18 +68,8 @@ function Header() {
 
   useEffect(() => {
     let author = JSON.parse(localStorage.getItem('author'));
-    let userFb = JSON.parse(localStorage.getItem('authorFb'));
-    let userGoogle = JSON.parse(localStorage.getItem('authorGoogle'));
     if (author) {
       setIsUser(author);
-      setCurrentUser(true);
-    }
-    if (userFb) {
-      setIsUser(userFb);
-      setCurrentUser(true);
-    }
-    if (userGoogle) {
-      setIsUser(userGoogle);
       setCurrentUser(true);
     }
     // eslint-disable-next-line no-use-before-define
@@ -110,19 +105,27 @@ function Header() {
   useEffect(() => {
     const checkCart = async () => {
       const cartItemCheck = await JSON.parse(localStorage.getItem('cart'));
-      setCartItem(cartItemCheck);
-      setCartItemSumQty(cartItemCheck.length);
-      // eslint-disable-next-line array-callback-return
-      cartItemCheck.map((item) => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        total += item.product_price;
-      });
-      setCartItemTotal(total);
+      if (cartItemCheck) {
+        setCartItem(cartItemCheck);
+        setCartItemSumQty(cartItemCheck.length);
+      }
     };
     checkCart();
   }, [checkCartButton]);
+  useEffect(() => {
+    if (cartItem) {
+      // eslint-disable-next-line array-callback-return
+      cartItem.map((item) => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        total += item.product_price * item.qty;
+      });
+      setCartItemTotal(total);
+    }
+  }, [cartItem]);
 
   const handleShow = () => setShowModal(true);
+
+  const handleShowInfo = () => setShowInfo(true);
 
   const navigate = useNavigate();
   const goToPosts = async (event) => {
@@ -135,21 +138,19 @@ function Header() {
 
   const logOut = () => {
     localStorage.removeItem('author');
-    localStorage.removeItem('authorFb');
-    localStorage.removeItem('authorGoogle');
   };
 
   return (
     <header className={cx('default-header-wrapper')}>
       <Navbar style={{ width: '100%' }}>
         <Container fluid>
-          <Navbar.Brand className={cx('default-header-wrapper-tile')} href="#">
+          <Navbar.Brand className={cx('default-header-wrapper-tile')} href="/">
             Siêu Thị Mini
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav className="me-auto my-2 my-lg-0">
-              <Nav.Link className={cx('header-link')} href="">
+              <Nav.Link className={cx('header-link')} href="/">
                 Trang Chủ
               </Nav.Link>
               <Nav.Link className={cx('header-link')} href="">
@@ -266,9 +267,38 @@ function Header() {
                   active="true"
                   enable-caret="true"
                 >
-                  <NavDropdown.Item href="#action/3.1">Thông tin cá nhân</NavDropdown.Item>
-                  <NavDropdown.Item href="/cart">Giỏ hàng</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">Đơn hàng</NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => {
+                      handleShowInfo();
+                      setStep('1');
+                    }}
+                  >
+                    Thông tin cá nhân
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => {
+                      handleShowInfo();
+                      setStep('3');
+                    }}
+                  >
+                    Cập nhật địa chỉ
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => {
+                      handleShowInfo();
+                      setStep('4');
+                    }}
+                  >
+                    Lấy lại mật khẩu
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => {
+                      handleShowInfo();
+                      setStep('2');
+                    }}
+                  >
+                    Đơn hàng
+                  </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item href="/" onClick={logOut}>
                     Thoát
@@ -292,6 +322,8 @@ function Header() {
       </Navbar>
 
       {showModal ? <ModalLogin setShowModal={setShowModal} /> : <></>}
+
+      {showInfo ? <ModalInformation step={step} setShowInfo={setShowInfo} /> : <></>}
     </header>
   );
 }

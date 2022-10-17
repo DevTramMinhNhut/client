@@ -14,43 +14,43 @@ function Register() {
   let navigate = useNavigate();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
-  const [againPassword, setAgainPassword] = useState();
-
-  const [validated, setValidated] = useState(false);
 
   const userData = {
     username: '',
     password: '',
-    timeout: '',
+  };
+
+  const [form, setForm] = useState({});
+  const [errors, setErrors] = useState({});
+  const setField = (field, value) => {
+    setForm({
+      ...form,
+      [field]: value,
+    });
+    if (!!errors[field])
+      setErrors({
+        ...errors,
+        [field]: null,
+      });
+  };
+  const findFormErrors = () => {
+    const { username, password, againPassword } = form;
+    const newErrors = {};
+    // name errors
+    if (username.length < 8) newErrors.username = 'Tên tài khoản phải đủ 8 ký tự';
+    if (password.length < 8) newErrors.password = 'Mật khẩu phải đủ 8 ký tự';
+    if (password !== againPassword) newErrors.againPassword = 'Mật khẩu nhập lại bị sai';
+    return newErrors;
   };
 
   const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    if (username && username.length < 8) {
-      alert('Sai định dạng username !!');
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    if (password && password.length < 8) {
-      alert('Sai định dạng password !!');
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    if (password !== againPassword) {
-      alert('Nhập lại Mật khẩu không đúng !!');
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    setValidated(true);
-    if (form.checkValidity() === true) {
-      let time = new Date();
+    event.preventDefault();
+    const newErrors = findFormErrors();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
       userData.username = username;
       userData.password = password;
-      userData.time = time.setHours(time.getDate());
       event.preventDefault();
       axios
         .post(
@@ -58,7 +58,7 @@ function Register() {
           {
             username: userData.username,
             password: userData.password,
-            type: 'normal',
+            type: 'Normal',
           },
           {
             headers: {
@@ -67,11 +67,17 @@ function Register() {
           },
         )
         .then((res) => {
-          localStorage.setItem('author', JSON.stringify(userData));
-          navigate('/');
+          userData.id = res.data;
+          if (res.status) {
+            localStorage.setItem('author', JSON.stringify(userData));
+            navigate('/');
+          }
         })
         .catch((err) => {
-          alert('Hệ thống lỗi vui lòng F5 lại trang web');
+          console.log(err);
+          if (err) {
+            alert('Tên đăng nhập của bạn đã bị trùng vui lòng nhập lại tên đăng nhập khác');
+          }
         });
     }
   };
@@ -80,9 +86,9 @@ function Register() {
     <div className={cx('home-register')}>
       <div className={cx('home-register-1')}>
         <span className={cx('home-register-form-content')}>Đăng Ký Tài Khoản</span>
-        <Form noValidate validated={validated} onSubmit={handleSubmit} className={cx('home-register-form')}>
+        <Form onSubmit={handleSubmit} className={cx('home-register-form')}>
           <Form.Group controlId="formBasicEmail">
-            <Form.Label className={cx('form-label-1')}>Tên đăng nhập</Form.Label>
+            <Form.Label className={cx('form-label-1')}>Tên đăng nhập *</Form.Label>
             <Form.Control
               required
               className={cx('form-control-1')}
@@ -91,16 +97,24 @@ function Register() {
               placeholder="Tên đăng nhập"
               onChange={(e) => {
                 setUsername(e.target.value);
+                setField('username', e.target.value);
               }}
+              isInvalid={!!errors.username}
             />
-            <Form.Text style={{ marginLeft: '60px' }} className="text-muted">
-              Tên đăng nhập phải đủ 8 ký tự
-            </Form.Text>
+            {errors.username ? (
+              <Form.Control.Feedback style={{ marginLeft: '60px' }} type="invalid">
+                {errors.username}
+              </Form.Control.Feedback>
+            ) : (
+              <Form.Text style={{ marginLeft: '60px' }} className="text-muted">
+                Tên đăng nhập phải đủ 8 ký tự
+              </Form.Text>
+            )}
           </Form.Group>
 
           <Form.Group className={cx('home-register-form-mk')} controlId="formBasicPassword">
             <Form.Label required className={cx('form-label-1')}>
-              Mật khẩu
+              Mật khẩu *
             </Form.Label>
             <Form.Control
               required
@@ -109,25 +123,37 @@ function Register() {
               name="password"
               placeholder="Mật khẩu"
               onChange={(e) => {
+                setField('password', e.target.value);
                 setPassword(e.target.value);
               }}
+              isInvalid={!!errors.password}
             />
-            <Form.Text style={{ marginLeft: '60px' }} className="text-muted">
-              Mật khẩu phải đủ 8 ký tự
-            </Form.Text>
+            {errors.username ? (
+              <Form.Text style={{ marginLeft: '60px' }} className="text-muted">
+                Mật khẩu phải đủ 8 ký tự
+              </Form.Text>
+            ) : (
+              <Form.Control.Feedback style={{ marginLeft: '60px' }} type="invalid">
+                {errors.password}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group className="home-register-form-nhaplai-mk mb-4" controlId="validationCustom03">
             <Form.Label className={cx('form-label-1')}>Nhập lại mật khẩu</Form.Label>
             <Form.Control
               required
-              name="password1"
+              name="againPassword"
               className={cx('form-control-1')}
               type="password"
-              placeholder="Nhập lại mật khẩu"
+              placeholder="Nhập lại mật khẩu *"
               onChange={(e) => {
-                setAgainPassword(e.target.value);
+                setField('againPassword', e.target.value);
               }}
+              isInvalid={!!errors.againPassword}
             />
+            <Form.Control.Feedback style={{ marginLeft: '60px' }} type="invalid">
+              {errors.againPassword}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Button type="submit" className={cx('btn-register')} variant="outline-dark">
