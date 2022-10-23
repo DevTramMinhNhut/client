@@ -2,10 +2,8 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
-import { GrUpdate } from 'react-icons/gr';
 import { AiTwotoneDelete } from 'react-icons/ai';
 
-import { Link } from 'react-router-dom';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import * as customerApi from '../../../api/customer';
@@ -238,7 +236,7 @@ function UpdateAddress() {
                 <th>Stt</th>
                 <th style={{ width: '600px' }}>Địa chỉ</th>
                 <th>Ngày tạo</th>
-                <th style={{ width: '110px' }}></th>
+                <th style={{ width: '60px' }}></th>
               </tr>
             </thead>
             <tbody>
@@ -250,17 +248,6 @@ function UpdateAddress() {
 
                     <td> {moment(address.createdAt).utc().format('DD-MM-YYYY')}</td>
                     <td style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <OverlayTrigger
-                        placement="bottom"
-                        overlay={<Tooltip id="tooltip-disabled">Cập nhật địa chỉ</Tooltip>}
-                      >
-                        <span className="d-inline-block">
-                          <Button variant="outline-success">
-                            <GrUpdate />
-                          </Button>
-                        </span>
-                      </OverlayTrigger>
-
                       <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">Xoá địa chỉ</Tooltip>}>
                         <span className="d-inline-block">
                           <Button
@@ -278,7 +265,6 @@ function UpdateAddress() {
               })}
             </tbody>
           </Table>
-          {/* <ToastContainer /> */}
         </Col>
       </Row>
     </>

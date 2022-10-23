@@ -64,11 +64,13 @@ const FrameProduct = ({ data, discount }) => {
     });
   };
   const onAddFavorite = (product_id) => {
+    let local = JSON.parse(localStorage.getItem('author'));
+    console.log(local.id);
     const product = data.find((x) => x.product_id === product_id);
     axios
       .post(`http://localhost:3000/favorite/`, {
         product_id: product.product_id,
-        customer_id: 1,
+        customer_id: local ? local.id : '',
       })
       .then((res) => {
         toast(`Bạn thêm sản phẩm ${product.product_name} vào trang yêu thích`, {
@@ -170,7 +172,10 @@ const FrameProduct = ({ data, discount }) => {
               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">Yêu thích sản phẩm</Tooltip>}>
                 <span className="d-inline-block">
                   <AiOutlineHeart
-                    onClick={() => onAddFavorite(product.product_id)}
+                    onClick={() => {
+                      onAddFavorite(product.product_id);
+                      checkCartButton();
+                    }}
                     size="30px"
                     className={cx('home-product-discount-button-icon')}
                   />

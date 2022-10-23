@@ -55,10 +55,10 @@ const Information = () => {
     const { customer_gmail, customer_phone } = form;
     const newErrors = {};
 
-    if (!validEmail.test(customer_gmail)) {
+    if (!validEmail.test(customer_gmail ? customer_gmail : customer.customer_gmail)) {
       newErrors.customer_gmail = 'Gmail không đúng định dạng';
     }
-    if (!validPhone.test(customer_phone)) {
+    if (!validPhone.test(customer_phone ? customer_phone : customer.customer_phone)) {
       newErrors.customer_phone = 'Số điên thoại không đúng định dạng';
     }
 
@@ -66,12 +66,6 @@ const Information = () => {
   };
 
   const handleSubmit = (event) => {
-    if (!form.customer_name) {
-      setForm({
-        ...form,
-        customer_name: customer.customer_name,
-      });
-    }
     event.preventDefault();
     const newErrors = findFormErrors();
     if (Object.keys(newErrors).length > 0) {
@@ -82,11 +76,11 @@ const Information = () => {
         .put(
           `http://localhost:3000/customer/${customer.customer_id}`,
           {
-            customer_name: form.customer_name,
-            customer_gmail: form.customer_gmail,
-            customer_dob: form.customer_dob,
-            customer_phone: form.customer_phone,
-            customer_avatar: form.customer_avatar,
+            customer_name: form.customer_name ? form.customer_name : customer.customer_name,
+            customer_gmail: form.customer_gmail ? form.customer_gmail : customer.customer_gmail,
+            customer_dob: form.customer_dob ? form.customer_dob : customer.customer_dob,
+            customer_phone: form.customer_phone ? form.customer_phone : customer.customer_phone,
+            customer_avatar: form.customer_avatar ? form.customer_avatar : '',
           },
           {
             headers: {
@@ -189,7 +183,6 @@ const Information = () => {
                 setFile(e.target.files[0]);
                 setField('customer_avatar', e.target.files[0]);
               }}
-              required
             />
           </Form.Group>
         </Row>

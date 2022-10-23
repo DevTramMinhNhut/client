@@ -59,7 +59,6 @@ const ModalLogin = ({ setShowModal }) => {
     id: '',
     username: '',
   };
-  // const [checkId, setCheckId] = useState(false);
   const findFormErrors = () => {
     const { username, password } = form;
     const newErrors = {};

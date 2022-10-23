@@ -32,10 +32,13 @@ function Sidebar() {
 
   const [favorites, setFavorites] = useState([]);
   useEffect(() => {
+    let local = JSON.parse(localStorage.getItem('author'));
     const fetchAPI = async () => {
-      const data = await favoriteApi.get('favorite?limit=8');
-      setFavorites(data.favorites);
-      setLoading(false);
+      if (local) {
+        const data = await favoriteApi.get(`favorite?limit=5&&customer_id=${local.id}`);
+        setFavorites(data.favorites);
+        setLoading(false);
+      }
     };
     fetchAPI();
   }, [checkCartButton]);

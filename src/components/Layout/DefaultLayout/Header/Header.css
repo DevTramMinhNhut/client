@@ -103,9 +103,13 @@
 
 .header-link {
   margin-top: 10px;
-  color: white !important;
 }
-.header-link:hover {
+
+.header-link-link {
+  color: white;
+  text-decoration: none;
+}
+.header-link-link:hover {
   color: black !important;
 }
 

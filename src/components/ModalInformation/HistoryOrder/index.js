@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { Col, Image, Row } from 'react-bootstrap';
 
-function Order() {
+function HistoryOrder() {
   const [orders, setOrders] = useState([]);
   const [deleteOrder, setDeleteOrder] = useState(false);
   const [detail, setDetail] = useState(false);
@@ -22,7 +22,7 @@ function Order() {
     let local = JSON.parse(localStorage.getItem('author'));
     const fetchAPI = async () => {
       if (local) {
-        const data = await orderApi.get(`order?customer_id=${local.id}&&soft_Delete=0`);
+        const data = await orderApi.get(`order?customer_id=${local.id}&&soft_Delete=1`);
         setOrders(data.orders);
         setDeleteOrder(false);
       }
@@ -97,7 +97,7 @@ function Order() {
               <th>Thanh toán</th>
               <th style={{ width: '400px' }}>Địa chỉ thanh toán</th>
               <th>Ngày đặt hàng</th>
-              <th style={{ width: '120px' }}></th>
+              <th style={{ width: '50px' }}></th>
             </tr>
           </thead>
           <tbody>
@@ -120,18 +120,6 @@ function Order() {
                       <span className="d-inline-block">
                         <Button onClick={() => changDetail(order.order_id)} variant="outline-success">
                           <BiDetail />
-                        </Button>
-                      </span>
-                    </OverlayTrigger>
-
-                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">Huỷ đơn</Tooltip>}>
-                      <span className="d-inline-block">
-                        <Button
-                          onClick={() => updateStatus(order.order_id)}
-                          style={{ float: 'right' }}
-                          variant="outline-danger"
-                        >
-                          <FcCancel />
                         </Button>
                       </span>
                     </OverlayTrigger>
@@ -193,7 +181,6 @@ function Order() {
                 {' '}
                 <span style={{ fontSize: '16px', fontWeight: '600' }}>Hình thức thanh toán: </span>{' '}
                 {orderDetail[0]?.order_payment}
-                {orderDetail[0]?.order_payment === 'Thanh toán online' ? '(Đã thanh toán)' : ''}
               </div>
               <br />
               <div>
@@ -206,12 +193,6 @@ function Order() {
                 {' '}
                 <span style={{ fontSize: '16px', fontWeight: '600' }}>Ngày cập nhật đơn hàng: </span>{' '}
                 {moment(orderDetail[0]?.order_status.updatedAt).utc().format('DD-MM-YYYY HH:mm:ss')}
-              </div>
-              <br />
-              <div>
-                {' '}
-                <span style={{ fontSize: '16px', fontWeight: '600' }}>Ghi chú đơn hàng: </span>{' '}
-                {orderDetail[0]?.order_note}
               </div>
               <br />
               <div>
@@ -230,4 +211,4 @@ function Order() {
   );
 }
 
-export default Order;
+export default HistoryOrder;

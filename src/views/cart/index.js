@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
 import { useNavigate } from 'react-router-dom';
 import * as customerApi from '../../api/customer';
+import ModalPayMent from '../../components/ModalPayMent';
 
 const cx = classNames.bind(style);
 
@@ -21,6 +22,9 @@ function Cart() {
   const [customerAddress, setCustomerAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [address, setAddress] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const [pay, setPay] = useState(false);
+  const [orderNote, setOrderNote] = useState();
 
   useEffect(() => {
     if (cartItem) {
@@ -38,10 +42,17 @@ function Cart() {
       if (local) {
         const data = await customerApi.get(`customer?customer_id=${local.id}`);
         setCustomerAddress(data.customers[0].addresses);
+        setAddress(data.customers[0].addresses[data.customers[0].addresses.length - 1]);
       }
     };
     fetchAPI();
   }, []);
+
+  useEffect(() => {
+    let local = JSON.parse(localStorage.getItem('author'));
+    if (address) local.address = address.address ? address.address : address;
+    localStorage.setItem('author', JSON.stringify(local));
+  }, [address]);
 
   useEffect(() => {
     let sumCart = 0;
@@ -90,6 +101,7 @@ function Cart() {
     });
   };
   let detailCart = [];
+  useEffect(() => {}, [total, cartItem]);
 
   const addCartApi = () => {
     const agreeDelete = window.confirm(`Bạn có muốn mua sản phẩm không ??`);
@@ -106,14 +118,14 @@ function Cart() {
           },
         ];
       });
-      console.log(address);
       axios
         .post(`http://localhost:3000/order/`, {
           customer_id: local.id,
           order_total: total,
-          address: address, 
+          address: address.address ? address.address : address,
           order_payment: 'Trực Tiếp',
           order_detail: detailCart,
+          order_note: orderNote ? orderNote : 'Không có ghi chú',
         })
         .then((res) => {
           if (res) {
@@ -144,6 +156,14 @@ function Cart() {
     }
   };
 
+  const checkPayMent = () => {
+    if (pay === true) {
+      setShowModal(true);
+    } else {
+      addCartApi();
+    }
+  };
+
   return (
     <Container fluid="md">
       {cartItem.length > 0 ? (
@@ -158,8 +178,12 @@ function Cart() {
             </div>
           </div>
           <Row className={cx('home-cart')}>
-            <Col sm={8}>Giỏ hàng của bạn</Col>
-            <Col sm={4}>Vui lòng chọn địa chỉ giao hàng</Col>
+            <Col sm={8}>
+              <h6> Giỏ hàng của bạn </h6>
+            </Col>
+            <Col sm={4}>
+              <h6> Vui lòng chọn địa chỉ giao hàng </h6>
+            </Col>
           </Row>
           <Row className={cx('home-cart-content')}>
             <Col sm={8}>
@@ -264,14 +288,13 @@ function Cart() {
                     </label>
                   </div>
                 </div>
-                <Button variant="outline-dark" onClick={addCartApi}>
+                <Button variant="outline-dark" onClick={checkPayMent}>
                   Mua sản phẩm
                 </Button>
                 <ToastContainer />
               </div>
             </Col>
             <Col sm={4}>
-              <br />
               <Form>
                 {customerAddress?.map((customerAddress, index) => (
                   <Form.Check
@@ -286,6 +309,35 @@ function Cart() {
                   />
                 ))}
               </Form>
+
+              <br />
+              <h6> Vui lòng chọn hình thức thanh toán </h6>
+              <Form>
+                <Form.Check
+                  name="checkPay"
+                  defaultChecked={true}
+                  onClick={() => setPay(false)}
+                  type="radio"
+                  id="custom-switch"
+                  label="Thanh toán khi nhận hàng"
+                />
+                <Form.Check
+                  onClick={() => setPay(true)}
+                  name="checkPay"
+                  type="radio"
+                  id="custom-switch"
+                  label="Thanh toán online"
+                />
+              </Form>
+
+              <br />
+              <h6> Vui lòng nhập ghi chú </h6>
+              <Form>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                  <Form.Label>Ghi chú</Form.Label>
+                  <Form.Control as="textarea" onChange={(e) => setOrderNote(e.target.value)} rows={3} />
+                </Form.Group>
+              </Form>
             </Col>
           </Row>
         </>
@@ -295,6 +347,8 @@ function Cart() {
           <h5> Giỏ hàng rỗng </h5>
         </div>
       )}
+
+      {showModal ? <ModalPayMent total={total} setShowModal={setShowModal} orderNote={orderNote} /> : <></>}
     </Container>
   );
 }

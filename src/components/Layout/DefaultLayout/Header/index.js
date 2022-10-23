@@ -12,13 +12,14 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useEffect, useState, useRef, useContext } from 'react';
 import Image from '../../../Image';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import useDebounce from '../../../../hooks/useDebounce';
 
 //icon
 import { BsCart2 } from 'react-icons/bs';
 import { CgSearchFound } from 'react-icons/cg';
 import { IoMicOutline } from 'react-icons/io5';
+import { BiHeart } from 'react-icons/bi';
 
 import * as search from '../../../../api/search';
 
@@ -150,17 +151,27 @@ function Header() {
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav className="me-auto my-2 my-lg-0">
-              <Nav.Link className={cx('header-link')} href="/">
-                Trang Chủ
+              <Nav.Link className={cx('header-link')}>
+                <NavLink className={cx('header-link-link')} to="/">
+                  Trang Chủ
+                </NavLink>
               </Nav.Link>
-              <Nav.Link className={cx('header-link')} href="">
-                Giới Thiệu
+              <Nav.Link className={cx('header-link')}>
+                <NavLink className={cx('header-link-link')} to="/gioi-thieu">
+                  {' '}
+                  Giới Thiệu
+                </NavLink>
               </Nav.Link>
-              <Nav.Link className={cx('header-link')} href="">
-                Liên Hệ
+              <Nav.Link className={cx('header-link')}>
+                <NavLink className={cx('header-link-link')} to="/lien-he">
+                  {' '}
+                  Liên Hệ
+                </NavLink>
               </Nav.Link>
-              <Nav.Link className={cx('header-link')} href="">
-                Hổ Trợ
+              <Nav.Link className={cx('header-link')}>
+                <NavLink className={cx('header-link-link')} to="/ho-tro">
+                  Hổ Trợ
+                </NavLink>
               </Nav.Link>
               <HeadlessTippy
                 visible={showKq && kqtimkiem.length > 0}
@@ -255,6 +266,16 @@ function Header() {
                   </Tippy>
                 </Link>
               </Nav.Link>
+
+              <Nav.Link style={{ fontSize: '30px' }}>
+                <Link to="/product-like" style={{ textDecoration: 'none', color: '#fff' }}>
+                  <Tippy content="Yêu thích">
+                    <div style={{ marginLeft: '50px', marginTop: '-2px' }}>
+                      <BiHeart />
+                    </div>
+                  </Tippy>
+                </Link>
+              </Nav.Link>
             </Nav>
             {currentUser ? (
               <Nav>
@@ -289,7 +310,7 @@ function Header() {
                       setStep('4');
                     }}
                   >
-                    Lấy lại mật khẩu
+                    Đổi mật khẩu
                   </NavDropdown.Item>
                   <NavDropdown.Item
                     onClick={() => {

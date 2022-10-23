@@ -16,7 +16,6 @@ function SearchProduct() {
   // eslint-disable-next-line  no-unused-vars
   const [search, setSearch] = useSearchParams();
   const searchName = search.get('name') || '';
-  console.log(searchName);
 
   const [data, setData] = useState([]);
   useEffect(() => {

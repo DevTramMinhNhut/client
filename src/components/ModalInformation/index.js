@@ -11,9 +11,10 @@ import Col from 'react-bootstrap/Col';
 
 // api
 import Information from './Information/index';
-import PasswordRetrieval from './PasswordRetrieval';
+import UpdatePassword from './UpdatePassword';
 import UpdateAddress from './UpdateAddress';
 import Order from './Order';
+import HistoryOrder from './HistoryOrder';
 const ModalInformation = ({ setShowInfo, step }) => {
   const [show, setShow] = useState(true);
   const handleClose = () => {
@@ -24,19 +25,23 @@ const ModalInformation = ({ setShowInfo, step }) => {
   const [step2, setStep2] = useState(false);
   const [step3, setStep3] = useState(false);
   const [step4, setStep4] = useState(false);
+  const [step5, setStep5] = useState(false);
   useEffect(() => {
     if (step) {
       if (step === '2') {
         setStep2(true);
         setStep1(false);
+        setStep5(false);
       }
       if (step === '3') {
         setStep3(true);
         setStep1(false);
+        setStep5(false);
       }
       if (step === '4') {
         setStep4(true);
         setStep1(false);
+        setStep5(false);
       }
     }
   }, []);
@@ -57,6 +62,7 @@ const ModalInformation = ({ setShowInfo, step }) => {
                     setStep2(false);
                     setStep3(false);
                     setStep4(false);
+                    setStep5(false);
                   }}
                 >
                   Cập nhật thông tin
@@ -70,10 +76,24 @@ const ModalInformation = ({ setShowInfo, step }) => {
                     setStep2(true);
                     setStep3(false);
                     setStep4(false);
+                    setStep5(false);
                   }}
-                  // (step2 ? 'disabled' : '')
                 >
-                  Đơn hàng
+                  Đơn hàng của bạn
+                </Button>
+              </Col>
+              <Col key={2}>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setStep1(false);
+                    setStep2(false);
+                    setStep3(false);
+                    setStep4(false);
+                    setStep5(true);
+                  }}
+                >
+                  Lịch sử mua hàng
                 </Button>
               </Col>
               <Col key={3}>
@@ -84,6 +104,7 @@ const ModalInformation = ({ setShowInfo, step }) => {
                     setStep2(false);
                     setStep3(true);
                     setStep4(false);
+                    setStep5(false);
                   }}
                 >
                   Cập nhật địa chỉ
@@ -97,9 +118,10 @@ const ModalInformation = ({ setShowInfo, step }) => {
                     setStep2(false);
                     setStep3(false);
                     setStep4(true);
+                    setStep5(false);
                   }}
                 >
-                  Lấy lại mật khẩu
+                  Đổi mật khẩu
                 </Button>
               </Col>
             </Row>
@@ -110,7 +132,8 @@ const ModalInformation = ({ setShowInfo, step }) => {
         {step1 === true ? <Information /> : <></>}
         {step2 === true ? <Order /> : <></>}
         {step3 === true ? <UpdateAddress /> : <></>}
-        {step4 === true ? <PasswordRetrieval /> : <></>}
+        {step4 === true ? <UpdatePassword /> : <></>}
+        {step5 === true ? <HistoryOrder /> : <></>}
       </Modal.Body>
     </Modal>
   );

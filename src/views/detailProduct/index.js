@@ -81,7 +81,8 @@ function DetailProduct() {
       .post(`http://localhost:3000/comment/`, {
         comment_content: content,
         product_id: product_id,
-        customer_id: idAccount.id,
+        customer_id: idAccount?.id,
+        comment_star: starComment,
       })
       .then((res) => {
         if (res) {
@@ -251,7 +252,7 @@ function DetailProduct() {
         </Col>
       </Row>
       <Row className={cx('detail-product-cungloai')}>
-        <Col sm={12}>
+        <Col sm={12} className="mt-2 mb-3">
           <div className={cx('detail-product-cungloai-title')}>Sản phẩm liên quan</div>
           <div className={cx('detail-product-cungloai-content')}>
             <Container>
@@ -300,7 +301,7 @@ function DetailProduct() {
         </Col>
       </Row>
       <Row className={cx('detail-product-thongtin')}>
-        <Col sm={12}>
+        <Col sm={12} className="mt-2 mb-3">
           <div className={cx('detail-product-thongtin-title')}>
             <span> Thông tin sản phẩm </span>
             <span style={{ float: 'right' }}> Nhà cung cấp {product.provider} </span>
@@ -326,10 +327,45 @@ function DetailProduct() {
                       -{' '}
                       <span style={{ fontSize: '16px', fontWeight: '600 ' }}>
                         {' '}
-                        {comment.customer?.customer_name.toUpperCase()}
+                        {comment.customer?.customer_name ? comment.customer?.customer_name.toUpperCase() : 'Không tên'}
                       </span>{' '}
                       : {comment.comment_content}
                     </div>
+                    <div style={{ color: '#FFFF33', fontSize: '20px' }}>
+                      {comment.comment_star === 1 ? <AiFillStar /> : ''}
+                      {comment.comment_star === 2 ? (
+                        <>
+                          {' '}
+                          <AiFillStar /> <AiFillStar />{' '}
+                        </>
+                      ) : (
+                        ''
+                      )}
+                      {comment.comment_star === 3 ? (
+                        <>
+                          {' '}
+                          <AiFillStar /> <AiFillStar /> <AiFillStar />{' '}
+                        </>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                    {comment.comment_star === 4 ? (
+                      <>
+                        {' '}
+                        <AiFillStar /> <AiFillStar /> <AiFillStar /> <AiFillStar />{' '}
+                      </>
+                    ) : (
+                      ''
+                    )}
+                    {comment.comment_star === 5 ? (
+                      <>
+                        {' '}
+                        <AiFillStar /> <AiFillStar /> <AiFillStar /> <AiFillStar /> <AiFillStar />{' '}
+                      </>
+                    ) : (
+                      ''
+                    )}
                     <div>
                       {moment(comment.createdAt).utc().format('DD-MM-YYYY H:mm:ss')}{' '}
                       <Button variant="danger" onClick={() => deleteComment(comment.comment_id)}>
