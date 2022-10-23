@@ -2,7 +2,7 @@ import { Badge, Button, Container, Image } from 'react-bootstrap';
 import classNames from 'classnames/bind';
 import style from './detailProduct.css';
 
-import { Col, Row } from 'reactstrap';
+import { Col, Row } from 'react-bootstrap';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Carousel from 'react-bootstrap/Carousel';
 import { IoReloadCircleOutline } from 'react-icons/io5';

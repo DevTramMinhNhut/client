@@ -2,9 +2,8 @@ import { Button, Container } from 'react-bootstrap';
 import classNames from 'classnames/bind';
 import style from './detailCategory.css';
 
-import { Col, Row } from 'reactstrap';
+import { Col, Row } from 'react-bootstrap';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-
 
 import { useParams } from 'react-router-dom';
 import * as productApi from '../../api/product';

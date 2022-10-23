@@ -2,7 +2,7 @@ import { Container } from 'react-bootstrap';
 import classNames from 'classnames/bind';
 import style from './searchProduct.css';
 
-import { Col, Row } from 'reactstrap';
+import { Col, Row } from 'react-bootstrap';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import * as productApi from '../../api/product';
