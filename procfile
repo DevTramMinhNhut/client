@@ -1,1 +1,1 @@
-node:web public\index.html
+node:web src\index.js
