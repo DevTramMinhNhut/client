@@ -4,6 +4,8 @@
   background-color: #008848;
   display: flex;
   justify-content: center;
+  position: fixed;
+  z-index: 1;
 }
 
 .default-header-wrapper-tile {

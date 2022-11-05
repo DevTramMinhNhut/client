@@ -6,6 +6,7 @@
 .default-container {
   width: 1300px;
   display: flex;
+  margin-top: 50px;
 }
 
 /* .default-content {

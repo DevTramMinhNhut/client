@@ -22,7 +22,7 @@ function DefaultLayout({ children }) {
         <div className={cx('default-wrapper')}>
           <Header />
           <div className={cx('default-container')}>
-            <Sidebar />
+            {!children.props.noSidebar ? <Sidebar /> : <> </>}
             <ScrollToTop
               smooth
               viewBox="0 0 20 20"

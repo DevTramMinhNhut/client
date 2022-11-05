@@ -13,19 +13,19 @@ import { useState, useEffect } from 'react';
 
 import * as productApi from '../../api/product';
 import FrameProduct from '../../components/FrameProduct';
-
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Loadpage from '../../components/loadpage/Loadpage';
 
 const cx = classNames.bind(style);
 
 function Home() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [numberProductList, setNumberProductList] = useState(12);
   useEffect(() => {
     const fetchAPI = async () => {
       const data = await productApi.get(`product?limit=${numberProductList}`);
       setData(data.products);
+      setLoading(false);
     };
     fetchAPI();
   }, [numberProductList]);
@@ -39,6 +39,7 @@ function Home() {
     const fetchAPI = async () => {
       const data = await productApi.get(`product?limit=6&&orderCheck=DESC`);
       setDataNew(data.products);
+      setLoading(false);
     };
     fetchAPI();
   }, []);
@@ -49,6 +50,7 @@ function Home() {
     const fetchAPI = async () => {
       const data = await productApi.get(`product?limit=8`);
       setDataDiscount(data.products);
+      setLoading(false);
     };
     fetchAPI();
   }, []);
@@ -59,6 +61,8 @@ function Home() {
       }
     });
   }
+  if (loading) return <Loadpage />;
+  else
   return (
     <Container fluid="md">
       <Row className={cx('home-slider')}>

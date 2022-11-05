@@ -99,7 +99,7 @@ const FrameProduct = ({ data, discount }) => {
     <Container>
       <Row>
         {data.map((product, index) => (
-          <Col sm={3} key={index} style={{ position: 'relative' }}>
+          <Col  className="frame-product" sm={3} key={index} style={{ position: 'relative' }}>
             <div className={cx('home-product-discount-img')}>
               {discount === true ? (
                 <div className={cx('home-discount')}>

@@ -8,23 +8,32 @@ import SearchProduct from '../views/searchProduct';
 import Introduce from '../views/home/introduce';
 import Contact from '../views/home/contact';
 import Support from '../views/home/support';
-import ProductLike from '../views/productLike';
+import Info from '../views/account/info';
+import Order from '../views/account/order';
+import Address from '../views/account/address';
+import Like from '../views/account/like';
+import Comment from '../views/account/comment';
 
 // không cần đăng nhập
 const publicRoutes = [
   { path: '/', component: Home },
-  { path: '/gioi-thieu', component: Introduce },
-  { path: '/lien-he', component: Contact },
-  { path: '/ho-tro', component: Support },
-  { path: '/product-like', component: ProductLike },
+  { path: '/gioi-thieu', component: Introduce,  noSidebar: true  },
+  { path: '/lien-he', component: Contact,  noSidebar: true },
+  { path: '/ho-tro', component: Support,  noSidebar: true  },
   { path: '/detail/product/:product_id', component: DetailProduct },
   { path: '/detail/categories/:category_id', component: DetailCategory },
   { path: '/search/product', component: SearchProduct },
   { path: '/register', component: Register, layout: null },
   { path: '/cart', component: Cart },
-  { path: '/cart/payment', component: Payment, layout: null },
 ];
 // cần đăng nhập
-const privateRoutes = [];
+const privateRoutes = [
+  { path: '/cart/payment', component: Payment, layout: null },
+  { path: '/tai-khoan/thong-tin-ca-nhan', component: Info, noSidebar: true  },
+  { path: '/tai-khoan/hoa-don', component: Order, noSidebar: true  },
+  { path: '/tai-khoan/dia-chi', component: Address, noSidebar: true  },
+  { path: '/tai-khoan/yeu-thich', component: Like, noSidebar: true  },
+  { path: '/tai-khoan/binh-luan', component: Comment, noSidebar: true  },
+];
 
 export { publicRoutes, privateRoutes };

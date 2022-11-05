@@ -66,49 +66,53 @@ function Sidebar() {
             })}
           </ListGroup>
           <br /> <br />
-          <div>
-            {' '}
-            <ListGroup className={cx('default-sidebar-menu')}>
-              <ListGroup.Item>
-                <BsHeartFill style={{ color: 'red' }} className={cx('default-sidebar-menu-icon')} />
-                SẢN PHẨM YÊU THÍCH
-              </ListGroup.Item>
-              {favorites.map((favorite, index) => {
-                return (
-                  <Link
-                    className={cx('default-sidebar-menu-link')}
-                    key={index}
-                    to={`/detail/product/${favorite.product_id}`}
-                  >
-                    <ListGroup.Item className={cx('item-menu-favorite')}>
-                      <Row>
-                        <Col xs={3}>
-                          <Image
-                            className="d-block"
-                            style={{
-                              height: '50px',
-                              width: '70px',
-                              marginLeft: '-10px',
-                            }}
-                            src={`http://127.0.0.1:8887//${favorite.product?.images[0].image_name}`}
-                            alt="Lỗi hình ảnh"
-                          />
-                        </Col>
-                        <Col
-                          className={cx('item-menu-favorite-content')}
-                          xs={9}
-                          style={{ height: '50px', width: '140px', whiteSpace: 'nowrap', overflow: 'hidden' }}
-                        >
-                          <div style={{ textOverflow: 'ellipsis' }}>{favorite.product?.product_name} </div>
-                          <span>{favorite.product?.provider} </span>
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  </Link>
-                );
-              })}
-            </ListGroup>{' '}
-          </div>
+          {favorites.length > 0 ? (
+            <div>
+              {' '}
+              <ListGroup className={cx('default-sidebar-menu')}>
+                <ListGroup.Item>
+                  <BsHeartFill style={{ color: 'red' }} className={cx('default-sidebar-menu-icon')} />
+                  SẢN PHẨM YÊU THÍCH
+                </ListGroup.Item>
+                {favorites.map((favorite, index) => {
+                  return (
+                    <Link
+                      className={cx('default-sidebar-menu-link')}
+                      key={index}
+                      to={`/detail/product/${favorite.product_id}`}
+                    >
+                      <ListGroup.Item className={cx('item-menu-favorite')}>
+                        <Row>
+                          <Col xs={3}>
+                            <Image
+                              className="d-block"
+                              style={{
+                                height: '50px',
+                                width: '70px',
+                                marginLeft: '-10px',
+                              }}
+                              src={`http://127.0.0.1:8887//${favorite.product?.images[0].image_name}`}
+                              alt="Lỗi hình ảnh"
+                            />
+                          </Col>
+                          <Col
+                            className={cx('item-menu-favorite-content')}
+                            xs={9}
+                            style={{ height: '50px', width: '140px', whiteSpace: 'nowrap', overflow: 'hidden' }}
+                          >
+                            <div style={{ textOverflow: 'ellipsis' }}>{favorite.product?.product_name} </div>
+                            <span>{favorite.product?.provider} </span>
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    </Link>
+                  );
+                })}
+              </ListGroup>{' '}
+            </div>
+          ) : (
+            <></>
+          )}
         </aside>
       </>
     );

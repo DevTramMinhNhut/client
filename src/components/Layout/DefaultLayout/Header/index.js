@@ -115,11 +115,11 @@ function Header() {
   }, [checkCartButton]);
   useEffect(() => {
     if (cartItem) {
-      // eslint-disable-next-line array-callback-return
-      cartItem.map((item) => {
+      cartItem.map(
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        total += item.product_price * item.qty;
-      });
+        (item) => (total += (item.product_price - (item.discount_percent * item.product_price) / 100) * item.qty),
+      );
+
       setCartItemTotal(total);
     }
   }, [cartItem]);
@@ -268,7 +268,7 @@ function Header() {
               </Nav.Link>
 
               <Nav.Link style={{ fontSize: '30px' }}>
-                <Link to="/product-like" style={{ textDecoration: 'none', color: '#fff' }}>
+                <Link to="/tai-khoan/yeu-thich" style={{ textDecoration: 'none', color: '#fff' }}>
                   <Tippy content="Yêu thích">
                     <div style={{ marginLeft: '50px', marginTop: '-2px' }}>
                       <BiHeart />
@@ -288,21 +288,15 @@ function Header() {
                   active="true"
                   enable-caret="true"
                 >
-                  <NavDropdown.Item
-                    onClick={() => {
-                      handleShowInfo();
-                      setStep('1');
-                    }}
-                  >
-                    Thông tin cá nhân
+                  <NavDropdown.Item>
+                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/thong-tin-ca-nhan">
+                      Thông tin cá nhân
+                    </NavLink>
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    onClick={() => {
-                      handleShowInfo();
-                      setStep('3');
-                    }}
-                  >
-                    Cập nhật địa chỉ
+                  <NavDropdown.Item>
+                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/dia-chi">
+                      Cập nhật địa chỉ
+                    </NavLink>
                   </NavDropdown.Item>
                   <NavDropdown.Item
                     onClick={() => {
@@ -312,13 +306,10 @@ function Header() {
                   >
                     Đổi mật khẩu
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    onClick={() => {
-                      handleShowInfo();
-                      setStep('2');
-                    }}
-                  >
-                    Đơn hàng
+                  <NavDropdown.Item>
+                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/hoa-don">
+                      Lịch sử mua hàng
+                    </NavLink>
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item href="/" onClick={logOut}>

@@ -58,7 +58,7 @@ function PayMent() {
         ];
       });
       axios
-        .post(`http://localhost:3000/order/`, {
+        .post(`http://localhost:3000/order?isAdmin=false`, {
           customer_id: local.id,
           order_total: total,
           address: address,
@@ -77,9 +77,10 @@ function PayMent() {
               draggable: true,
               progress: undefined,
             });
+            localStorage.removeItem('cart')
             setTimeout(() => {
               navigate('/');
-            }, 15000);
+            }, 1500);
           }
         })
         .catch((err) => {

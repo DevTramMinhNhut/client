@@ -9,7 +9,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import * as customerApi from '../../api/customer';
 import ModalPayMent from '../../components/ModalPayMent';
 
@@ -26,6 +26,8 @@ function Cart() {
   const [pay, setPay] = useState(false);
   const [orderNote, setOrderNote] = useState();
 
+  const [checkCustomer, setCheckCustomer] = useState(false);
+
   useEffect(() => {
     if (cartItem) {
       let local = localStorage.getItem('cart');
@@ -36,6 +38,7 @@ function Cart() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // check customer order
   useEffect(() => {
     let local = JSON.parse(localStorage.getItem('author'));
     const fetchAPI = async () => {
@@ -43,10 +46,17 @@ function Cart() {
         const data = await customerApi.get(`customer?customer_id=${local.id}`);
         setCustomerAddress(data.customers[0].addresses);
         setAddress(data.customers[0].addresses[data.customers[0].addresses.length - 1]);
+        if (
+          data.customers[0].addresses.length > 0 ||
+          data.customers[0].customer_phone !== null ||
+          data.customers[0].customer_phone !== null
+        ) {
+          setCheckCustomer(true);
+        }
       }
     };
     fetchAPI();
-  }, []);
+  }, [checkCartButton, pay]);
 
   useEffect(() => {
     let local = JSON.parse(localStorage.getItem('author'));
@@ -60,7 +70,7 @@ function Cart() {
       (item) => (sumCart += (item.product_price - (item.discount_percent * item.product_price) / 100) * item.qty),
     );
     if (sumCart !== 0) {
-      setTotal(sumCart);
+      setTotal(sumCart + 15000);
     }
   }, [total, cartItem]);
 
@@ -104,63 +114,88 @@ function Cart() {
   useEffect(() => {}, [total, cartItem]);
 
   const addCartApi = () => {
-    const agreeDelete = window.confirm(`Bạn có muốn mua sản phẩm không ??`);
-    let local = JSON.parse(localStorage.getItem('author'));
-    if (agreeDelete && local) {
-      // eslint-disable-next-line array-callback-return
-      cartItem.map((item) => {
-        detailCart = [
-          ...detailCart,
-          {
-            product_id: item.product_id,
-            detail_quantity: item.qty,
-            detail_price: item.discount_percent > 0 ? item.product_price * item.discount_percent : item.product_price,
-          },
-        ];
-      });
-      axios
-        .post(`http://localhost:3000/order/`, {
-          customer_id: local.id,
-          order_total: total,
-          address: address.address ? address.address : address,
-          order_payment: 'Trực Tiếp',
-          order_detail: detailCart,
-          order_note: orderNote ? orderNote : 'Không có ghi chú',
-        })
-        .then((res) => {
-          if (res) {
-            toast.success('Tạo đơn hàng thành công', {
-              position: 'top-right',
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: false,
-              draggable: true,
-              progress: undefined,
-            });
-          }
-        })
-        .catch((err) => {
-          if (err) {
-            toast.error('Tạo đơn hàng thất bại', {
-              position: 'top-right',
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: false,
-              draggable: true,
-              progress: undefined,
-            });
-          }
+    if (checkCustomer === true) {
+      const agreeDelete = window.confirm(`Bạn có muốn mua sản phẩm không ??`);
+      let local = JSON.parse(localStorage.getItem('author'));
+      if (agreeDelete && local) {
+        // eslint-disable-next-line array-callback-return
+        cartItem.map((item) => {
+          detailCart = [
+            ...detailCart,
+            {
+              product_id: item.product_id,
+              detail_quantity: item.qty,
+              detail_price: item.discount_percent > 0 ? item.product_price * item.discount_percent : item.product_price,
+            },
+          ];
         });
+        axios
+          .post(`http://localhost:3000/order?isAdmin=false`, {
+            customer_id: local.id,
+            order_total: total,
+            address: address.address ? address.address : address,
+            order_payment: 'Trực Tiếp',
+            order_detail: detailCart,
+            order_note: orderNote ? orderNote : 'Không có ghi chú',
+          })
+          .then((res) => {
+            if (res) {
+              toast.success('Tạo đơn hàng thành công', {
+                position: 'top-right',
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+              });
+            }
+            localStorage.removeItem('cart')
+            setTimeout(() => {
+              navigate('/');
+            }, 1500);
+          })
+          .catch((err) => {
+            if (err) {
+              toast.error('Tạo đơn hàng thất bại', {
+                position: 'top-right',
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+              });
+            }
+          });
+      }
+    } else {
+      toast.warn('Cập nhật thông tin để thanh toán', {
+        position: 'top-right',
+        autoClose: 2000,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
-
   const checkPayMent = () => {
-    if (pay === true) {
-      setShowModal(true);
+    if (checkCustomer === false) {
+      toast.warn('Cập nhật thông tin để thanh toán', {
+        position: 'top-right',
+        autoClose: 2000,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
     } else {
-      addCartApi();
+      if (pay === true) {
+        setShowModal(true);
+      } else {
+        addCartApi();
+      }
     }
   };
 
@@ -291,7 +326,6 @@ function Cart() {
                 <Button variant="outline-dark" onClick={checkPayMent}>
                   Mua sản phẩm
                 </Button>
-                <ToastContainer />
               </div>
             </Col>
             <Col sm={4}>
@@ -342,13 +376,19 @@ function Cart() {
           </Row>
         </>
       ) : (
-        <div>
-          {' '}
-          <h5> Giỏ hàng rỗng </h5>
-        </div>
+        <div className="card-none">
+        <br />
+        <Image
+          style={{ width: '200px', height: '200px' }}
+          src="https://frontend.tikicdn.com/_desktop-next/static/img/account/empty-order.png"
+          alt="loi"
+        />
+        <h6>Chưa có trong giỏ hàng</h6>
+      </div>
       )}
 
       {showModal ? <ModalPayMent total={total} setShowModal={setShowModal} orderNote={orderNote} /> : <></>}
+      <ToastContainer />
     </Container>
   );
 }

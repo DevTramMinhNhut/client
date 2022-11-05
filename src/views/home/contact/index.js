@@ -8,7 +8,7 @@ import Iframe from 'react-iframe';
 
 function Contact() {
   return (
-    <Container className="contact mt-2">
+    <Container className="contact mt-2 mb-5">
       <Row>
         <Col sm={12} className="contact-1 mt-3">
           <h5>THÔNG TIN LIÊN HỆ KHÁC</h5>

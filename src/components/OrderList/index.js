@@ -5,13 +5,13 @@ import { BiDetail } from 'react-icons/bi';
 import { FcCancel } from 'react-icons/fc';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import * as orderApi from '../../../api/order';
 import moment from 'moment';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import { Col, Image, Row } from 'react-bootstrap';
+import { Stepper, Step } from 'react-form-stepper';
 
-function Order() {
+function OrderList({ ordersList }) {
   const [orders, setOrders] = useState([]);
   const [deleteOrder, setDeleteOrder] = useState(false);
   const [detail, setDetail] = useState(false);
@@ -19,16 +19,8 @@ function Order() {
   const [orderDetailProduct, setOrderDetailProduct] = useState();
 
   useEffect(() => {
-    let local = JSON.parse(localStorage.getItem('author'));
-    const fetchAPI = async () => {
-      if (local) {
-        const data = await orderApi.get(`order?customer_id=${local.id}&&soft_Delete=0`);
-        setOrders(data.orders);
-        setDeleteOrder(false);
-      }
-    };
-    fetchAPI();
-  }, [deleteOrder]);
+    setOrders(ordersList);
+  }, [ordersList, deleteOrder]);
 
   const changDetail = (order_id) => {
     setDetail(!detail);
@@ -93,7 +85,6 @@ function Order() {
             <tr>
               <th>Mã hoá đơn</th>
               <th>Tổng đơn hàng</th>
-              <th>Trạng thái</th>
               <th>Thanh toán</th>
               <th style={{ width: '400px' }}>Địa chỉ thanh toán</th>
               <th>Ngày đặt hàng</th>
@@ -111,8 +102,9 @@ function Order() {
                       currency: 'VND',
                     })}
                   </td>
-                  <td>{order.order_status?.status} </td>
+                  {/* <td>{order.order_status[0]?.status} </td> */}
                   <td>{order.order_payment} </td>
+
                   <td>{order.address} </td>
                   <td> {moment(order.createdAt).utc().format('DD-MM-YYYY')}</td>
                   <td style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -139,6 +131,7 @@ function Order() {
                 </tr>
               );
             })}
+            <ToastContainer />
           </tbody>
         </Table>
       ) : (
@@ -195,19 +188,6 @@ function Order() {
                 {orderDetail[0]?.order_payment}
                 {orderDetail[0]?.order_payment === 'Thanh toán online' ? '(Đã thanh toán)' : ''}
               </div>
-              <br />
-              <div>
-                {' '}
-                <span style={{ fontSize: '16px', fontWeight: '600' }}>Trạng thái đơn hàng: </span>{' '}
-                {orderDetail[0]?.order_status.status}
-              </div>
-              <br />
-              <div>
-                {' '}
-                <span style={{ fontSize: '16px', fontWeight: '600' }}>Ngày cập nhật đơn hàng: </span>{' '}
-                {moment(orderDetail[0]?.order_status.updatedAt).utc().format('DD-MM-YYYY HH:mm:ss')}
-              </div>
-              <br />
               <div>
                 {' '}
                 <span style={{ fontSize: '16px', fontWeight: '600' }}>Ghi chú đơn hàng: </span>{' '}
@@ -222,6 +202,16 @@ function Order() {
                   currency: 'VND',
                 })}
               </div>
+              <br />
+              <div>
+                <Stepper activeStep={orderDetail[0]?.order_statuses.length - 1}>
+                  {orderDetail[0]?.order_statuses.map((orderStatus, index) => {
+                    const status =
+                      orderStatus.status + ' ngày ' + moment(orderStatus.createdAt).utc().format('DD-MM-YYYY');
+                    return <Step key={index} label={status} />;
+                  })}
+                </Stepper>
+              </div>
             </Col>
           </Row>
         </>
@@ -230,4 +220,4 @@ function Order() {
   );
 }
 
-export default Order;
+export default OrderList;

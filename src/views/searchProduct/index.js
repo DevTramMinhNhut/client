@@ -31,9 +31,9 @@ function SearchProduct() {
       <div className={cx('detail-product-breadcrumbs')}>
         {' '}
         <Breadcrumb>
-          <Breadcrumb.Item href="#">Trang chủ</Breadcrumb.Item>
-          <Breadcrumb.Item href="#">Loại sản phẩm</Breadcrumb.Item>
-          <Breadcrumb.Item active>{search}</Breadcrumb.Item>
+          <Breadcrumb.Item href="/">Trang chủ</Breadcrumb.Item>
+          <Breadcrumb.Item href="#">Sản phẩm</Breadcrumb.Item>
+          <Breadcrumb.Item active>{searchName}</Breadcrumb.Item>
         </Breadcrumb>{' '}
       </div>
 

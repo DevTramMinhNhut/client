@@ -6,13 +6,13 @@ import { AiTwotoneDelete } from 'react-icons/ai';
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import * as customerApi from '../../../api/customer';
-import * as addressApi from '../../../api/address';
+import * as addressApi from '../../api/address';
 import moment from 'moment';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as customerApi from '../../api/customer';
 
-function UpdateAddress() {
+function AddressList() {
   const [customer, setCustomer] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [idAuthor, setIdAuthor] = useState();
@@ -126,7 +126,7 @@ function UpdateAddress() {
     const agreeDelete = window.confirm(`Bạn có muốn xóa địa chỉ này không ??`);
     if (agreeDelete) {
       axios.delete(`http://localhost:3000/customer/address/${id_address}`);
-      toast.info('Xoá địa chỉ thành công', {
+      toast.success('Xoá địa chỉ thành công', {
         position: 'top-right',
         autoClose: 500,
         hideProgressBar: false,
@@ -143,16 +143,16 @@ function UpdateAddress() {
   return (
     <>
       <Row>
-        <Col sm={4}>
-          <h6>Tạo địa chỉ </h6>
+        <Col sm={3}>
+          <h6> &ensp; Tạo địa chỉ </h6>
         </Col>
-        <Col sm={7}>
+        <Col sm={8}>
           <h6> Địa chỉ của bạn </h6>
         </Col>
       </Row>
       <Row>
-        <Col sm={4}>
-          <Form onSubmit={handleSubmit}>
+        <Col sm={3} className="mb-3" >
+          <Form onSubmit={handleSubmit} style={{marginLeft:'8px'}}>
             <Form.Select
               required="required"
               onChange={(e) => changCity(e.target.value)}
@@ -219,6 +219,7 @@ function UpdateAddress() {
               />
             </Form.Group>
             <Button
+              style={{marginLeft:'50px'}}
               type="submit"
               onClick={() => {
                 setCheckAddress(true);
@@ -229,14 +230,14 @@ function UpdateAddress() {
             </Button>
           </Form>
         </Col>
-        <Col sm={8}>
-          <Table bordered>
+        <Col sm={9}>
+          <Table >
             <thead>
               <tr>
                 <th>Stt</th>
-                <th style={{ width: '600px' }}>Địa chỉ</th>
+                <th style={{ width: '500px' }}>Địa chỉ</th>
                 <th>Ngày tạo</th>
-                <th style={{ width: '60px' }}></th>
+                <th style={{ width: '80px' }}></th>
               </tr>
             </thead>
             <tbody>
@@ -266,9 +267,10 @@ function UpdateAddress() {
             </tbody>
           </Table>
         </Col>
+        <ToastContainer />
       </Row>
     </>
   );
 }
 
-export default UpdateAddress;
+export default AddressList;

@@ -9,7 +9,7 @@ import chamsoc from '../../../styles/img/Cham-soc-khach-hang.png';
 
 function Support() {
   return (
-    <Container className="support mt-5">
+    <Container className="support mt-3 mb-5">
       <Row>
         <Col sm={12} className="support-1 mt-3">
           <h5>THÔNG TIN HỖ TRỢ</h5>

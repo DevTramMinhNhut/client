@@ -11,7 +11,7 @@ const cx = classNames.bind(style);
 
 function Introduce() {
   return (
-    <Container className={cx('introduce mt-2')}>
+    <Container className={cx('introduce mt-2 mb-5')}>
       <Row className={cx('introduce-2')}>
         <Col sm={12}>
           {' '}

@@ -19,11 +19,12 @@ import { gapi } from 'gapi-script';
 
 // api
 import * as customerApi from '../../api/customer';
+import ReCAPTCHA from 'react-google-recaptcha';
 const cx = classNames.bind(style);
 
 const ModalLogin = ({ setShowModal }) => {
   const [show, setShow] = useState(true);
-
+  const recaptchaRef = React.useRef();
   const handleClose = () => {
     setShow(false);
     setShowModal(false);
@@ -87,7 +88,7 @@ const ModalLogin = ({ setShowModal }) => {
 
     return newErrors;
   };
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const newErrors = findFormErrors();
     if (Object.keys(newErrors).length > 0) {
@@ -195,6 +196,13 @@ const ModalLogin = ({ setShowModal }) => {
     alert('Đăng nhập thất bại vui lòng nhập lại !!!');
     setShowModal(true);
   };
+
+  const changeCapCha = async () => {
+    const token = await recaptchaRef.current.executeAsync()
+    console.log(token)
+  };
+
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -214,7 +222,6 @@ const ModalLogin = ({ setShowModal }) => {
             />
             <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group className="mb-4" controlId="formBasicPassword">
             <Form.Label>Mật khẩu</Form.Label>
             <Form.Control
@@ -227,6 +234,7 @@ const ModalLogin = ({ setShowModal }) => {
             />
             <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
           </Form.Group>
+          <ReCAPTCHA ref={recaptchaRef} onChange={changeCapCha} sitekey="6LdNR9ciAAAAAHX13MF67ewO3X9hyPLophMI6rd1" />,
           <div className="mb-2 modal-Login">
             <Button type="submit" style={{ width: '200px' }} variant="success">
               Đăng nhập
