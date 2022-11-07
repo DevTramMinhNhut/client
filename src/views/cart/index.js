@@ -9,7 +9,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as customerApi from '../../api/customer';
 import ModalPayMent from '../../components/ModalPayMent';
 

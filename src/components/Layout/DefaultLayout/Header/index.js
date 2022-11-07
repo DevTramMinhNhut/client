@@ -31,6 +31,7 @@ import { Button } from 'react-bootstrap';
 import ModalLogin from '../../../ModalLogin/index.js';
 import { checkCart } from '../index';
 import ModalInformation from '../../../ModalInformation';
+import ModalRegister from '../../../ModalRegister';
 
 const cx = classNames.bind(style);
 
@@ -44,6 +45,7 @@ function Header() {
   const [searchValue, setSearchValue] = useState('');
 
   const [showModal, setShowModal] = useState(false);
+  const [showModalRegister, setShowModalRegister] = useState(false);
 
   const [showInfo, setShowInfo] = useState(false);
 
@@ -74,7 +76,7 @@ function Header() {
       setCurrentUser(true);
     }
     // eslint-disable-next-line no-use-before-define
-  }, [currentUser, showModal]);
+  }, [currentUser, showModal, showModalRegister]);
 
   const inputRef = useRef();
   const debounced = useDebounce(searchValue, 400);
@@ -125,6 +127,7 @@ function Header() {
   }, [cartItem]);
 
   const handleShow = () => setShowModal(true);
+  const handleShowRegister = () => setShowModalRegister(true);
 
   const handleShowInfo = () => setShowInfo(true);
 
@@ -319,7 +322,7 @@ function Header() {
               </Nav>
             ) : (
               <Nav className={cx('register-login')}>
-                <Nav.Link className={cx('register-login-dk')} href="./register" eventKey={2}>
+                <Nav.Link onClick={handleShowRegister} className={cx('register-login-dk')} eventKey={2}>
                   Đăng Ký
                 </Nav.Link>
                 <Nav className="gachngang"> | </Nav>
@@ -334,6 +337,8 @@ function Header() {
       </Navbar>
 
       {showModal ? <ModalLogin setShowModal={setShowModal} /> : <></>}
+
+      {showModalRegister ? <ModalRegister setShowModalRegister={setShowModalRegister} /> : <></>}
 
       {showInfo ? <ModalInformation step={step} setShowInfo={setShowInfo} /> : <></>}
     </header>
