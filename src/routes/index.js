@@ -3,7 +3,6 @@ import Payment from '../views/cart/payment';
 import DetailProduct from '../views/detailProduct';
 import DetailCategory from '../views/detailCategory';
 import Home from '../views/home/Home';
-import Register from '../views/register';
 import SearchProduct from '../views/searchProduct';
 import Introduce from '../views/home/introduce';
 import Contact from '../views/home/contact';
@@ -23,7 +22,6 @@ const publicRoutes = [
   { path: '/detail/product/:product_id', component: DetailProduct },
   { path: '/detail/categories/:category_id', component: DetailCategory },
   { path: '/search/product', component: SearchProduct },
-  { path: '/register', component: Register, layout: null },
   { path: '/cart', component: Cart },
 ];
 // cần đăng nhập
