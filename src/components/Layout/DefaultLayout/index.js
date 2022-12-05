@@ -5,7 +5,6 @@ import classNames from 'classnames/bind';
 import Footer from './Footer';
 import { createContext, useState } from 'react';
 import ScrollToTop from 'react-scroll-to-top';
-import MessengerCustomerChat from 'react-messenger-customer-chat';
 const cx = classNames.bind(styles);
 
 export const onClickCheckCart = createContext();
@@ -34,7 +33,6 @@ function DefaultLayout({ children }) {
             <div className={cx('default-content')}>{children}</div>
           </div>
           <Footer />
-          <MessengerCustomerChat pageId="100079611646694" appId="940619409929205" />,
         </div>
       </checkCart.Provider>
     </onClickCheckCart.Provider>

@@ -25,13 +25,12 @@ import * as search from '../../../../api/search';
 
 //
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { Button } from 'react-bootstrap';
 
 //components
 import ModalLogin from '../../../ModalLogin/index.js';
 import { checkCart } from '../index';
-import ModalInformation from '../../../ModalInformation';
 import ModalRegister from '../../../ModalRegister';
+import { MdOutlineExitToApp } from 'react-icons/md';
 
 const cx = classNames.bind(style);
 
@@ -46,10 +45,6 @@ function Header() {
 
   const [showModal, setShowModal] = useState(false);
   const [showModalRegister, setShowModalRegister] = useState(false);
-
-  const [showInfo, setShowInfo] = useState(false);
-
-  const [step, setStep] = useState('1');
 
   const checkSpeechOn = () => {
     setSpeech(true);
@@ -118,8 +113,11 @@ function Header() {
   useEffect(() => {
     if (cartItem) {
       cartItem.map(
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        (item) => (total += (item.product_price - (item.discount_percent * item.product_price) / 100) * item.qty),
+        (item) =>
+          (total +=
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            (item.product_price - ((item.discount_percent ? item.discount_percent : 0) * item.product_price) / 100) *
+            item.qty),
       );
 
       setCartItemTotal(total);
@@ -128,8 +126,6 @@ function Header() {
 
   const handleShow = () => setShowModal(true);
   const handleShowRegister = () => setShowModalRegister(true);
-
-  const handleShowInfo = () => setShowInfo(true);
 
   const navigate = useNavigate();
   const goToPosts = async (event) => {
@@ -173,7 +169,7 @@ function Header() {
               </Nav.Link>
               <Nav.Link className={cx('header-link')}>
                 <NavLink className={cx('header-link-link')} to="/ho-tro">
-                  Hổ Trợ
+                  Hỗ Trợ
                 </NavLink>
               </Nav.Link>
               <HeadlessTippy
@@ -221,7 +217,8 @@ function Header() {
               </HeadlessTippy>
               <Nav.Link className={cx('icon-mic')}>
                 {speech === false ? (
-                  <Button
+                  <div
+                    style={{ marginTop: '4px' }}
                     size="sm"
                     variant="outline-dark"
                     onClick={() => {
@@ -234,9 +231,10 @@ function Header() {
                         <IoMicOutline size={35} color={'white'} />
                       </div>
                     </Tippy>
-                  </Button>
+                  </div>
                 ) : (
-                  <Button
+                  <div
+                    style={{ marginTop: '4px' }}
                     size="sm"
                     variant="outline-danger"
                     onClick={() => {
@@ -246,10 +244,10 @@ function Header() {
                   >
                     <Tippy content="Mic">
                       <div>
-                        <IoMicOutline size={35} color={'white'} />
+                        <IoMicOutline size={35} color={'red'} />
                       </div>
                     </Tippy>
-                  </Button>
+                  </div>
                 )}
               </Nav.Link>
 
@@ -301,13 +299,10 @@ function Header() {
                       Cập nhật địa chỉ
                     </NavLink>
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    onClick={() => {
-                      handleShowInfo();
-                      setStep('4');
-                    }}
-                  >
-                    Đổi mật khẩu
+                  <NavDropdown.Item>
+                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/doi-mat-khau">
+                      Đổi mật khẩu
+                    </NavLink>
                   </NavDropdown.Item>
                   <NavDropdown.Item>
                     <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/hoa-don">
@@ -316,7 +311,7 @@ function Header() {
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item href="/" onClick={logOut}>
-                    Thoát
+                    Thoát <MdOutlineExitToApp size={26} />
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
@@ -339,8 +334,6 @@ function Header() {
       {showModal ? <ModalLogin setShowModal={setShowModal} /> : <></>}
 
       {showModalRegister ? <ModalRegister setShowModalRegister={setShowModalRegister} /> : <></>}
-
-      {showInfo ? <ModalInformation step={step} setShowInfo={setShowInfo} /> : <></>}
     </header>
   );
 }

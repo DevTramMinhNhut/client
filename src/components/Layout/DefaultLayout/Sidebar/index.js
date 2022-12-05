@@ -23,7 +23,7 @@ function Sidebar() {
 
   useEffect(() => {
     const fetchAPI = async () => {
-      const data = await categoryApi.get('categories');
+      const data = await categoryApi.get('category');
       setCategory(data.categories);
       setLoading(false);
     };

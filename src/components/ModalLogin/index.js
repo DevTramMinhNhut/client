@@ -5,10 +5,13 @@ import Modal from 'react-bootstrap/Modal';
 
 import style from './Login.css';
 import classNames from 'classnames/bind';
-import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { RiLockPasswordFill } from 'react-icons/ri';
+import { FaUserAlt } from 'react-icons/fa';
 
 // fb
 import FacebookLogin from 'react-facebook-login';
@@ -98,6 +101,14 @@ const ModalLogin = ({ setShowModal }) => {
       event.preventDefault();
       localStorage.setItem('author', JSON.stringify(authLogin));
       setShowModal(false);
+      toast.success('Đăng nhập thành công', {
+        position: 'top-right',
+        autoClose: 1000,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   // fb
@@ -131,9 +142,24 @@ const ModalLogin = ({ setShowModal }) => {
         )
         .then((res) => {
           setShowModal(false);
+          toast.success('Đăng nhập FaceBook thành công', {
+            position: 'top-right',
+            autoClose: 1000,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+          });
         })
         .catch((err) => {
-          alert('Đăng nhập thất bại vui lòng nhập lại !!!');
+          toast.error('Đăng nhập FaceBook thất bại', {
+            position: 'top-right',
+            autoClose: 1000,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+          });
           setShowModal(true);
         });
     }
@@ -183,25 +209,46 @@ const ModalLogin = ({ setShowModal }) => {
           },
         )
         .then((res) => {
+          toast.success('Đăng nhập Google thành công', {
+            position: 'top-right',
+            autoClose: 1000,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+          });
           setShowModal(false);
         })
         .catch((err) => {
-          alert('Đăng nhập thất bại vui lòng nhập lại !!!');
+          toast.error('Đăng nhập Google thất bại', {
+            position: 'top-right',
+            autoClose: 1000,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+          });
           setShowModal(true);
         });
     }
     setShowModal(false);
   };
   const onFailure = (err) => {
-    alert('Đăng nhập thất bại vui lòng nhập lại !!!');
+    toast.error('Đăng nhập thất bại vui lòng nhập lại !!!', {
+      position: 'top-right',
+      autoClose: 1000,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+    });
     setShowModal(true);
   };
 
   const changeCapCha = async () => {
-    const token = await recaptchaRef.current.executeAsync()
-    console.log(token)
+    // eslint-disable-next-line no-unused-vars
+    const token = await recaptchaRef.current.executeAsync();
   };
-
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -211,7 +258,7 @@ const ModalLogin = ({ setShowModal }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-4" controlId="formBasicEmail">
-            <Form.Label>Tên đăng nhập</Form.Label>
+            <Form.Label>Tên đăng nhập <FaUserAlt /> </Form.Label>
             <Form.Control
               type="text"
               placeholder="Tên đăng nhập"
@@ -223,7 +270,7 @@ const ModalLogin = ({ setShowModal }) => {
             <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-4" controlId="formBasicPassword">
-            <Form.Label>Mật khẩu</Form.Label>
+            <Form.Label>Mật khẩu <RiLockPasswordFill size='22' /></Form.Label>
             <Form.Control
               type="password"
               onChange={(e) => setField('password', e.target.value)}
@@ -234,15 +281,11 @@ const ModalLogin = ({ setShowModal }) => {
             />
             <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
           </Form.Group>
-          <ReCAPTCHA ref={recaptchaRef} onChange={changeCapCha} sitekey="6LdNR9ciAAAAAHX13MF67ewO3X9hyPLophMI6rd1" />,
-          <div className="mb-2 modal-Login">
-            <Button type="submit" style={{ width: '200px' }} variant="success">
+          <ReCAPTCHA ref={recaptchaRef} onChange={changeCapCha} sitekey="6LdNR9ciAAAAAHX13MF67ewO3X9hyPLophMI6rd1" />
+          <div className="mb-2 modal-Login center">
+            <Button type="submit" style={{ width: '200px', marginLeft: '30%' }} variant="success">
               Đăng nhập
             </Button>
-            <span>
-              Đăng ký tài khoản&nbsp;
-              <Link to="/register">Tại Đây.</Link>
-            </span>
           </div>
         </Form>
         <span className={cx('or')}>Hoặc</span>

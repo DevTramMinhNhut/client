@@ -12,6 +12,7 @@ import moment from 'moment';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { NavLink } from 'react-router-dom';
 
 function Like() {
   const [favorites, setFavorites] = useState([]);
@@ -51,8 +52,8 @@ function Like() {
         <Col>
           {' '}
           <Breadcrumb className="account-bread">
-            <Breadcrumb.Item className="account-bread1" href="/">
-              Trang chủ
+            <Breadcrumb.Item className="account-bread1" >
+            <NavLink to="/"> Trang chủ</NavLink>
             </Breadcrumb.Item>
             <Breadcrumb.Item className="account-bread1">Sản phẩm yêu thích</Breadcrumb.Item>
           </Breadcrumb>

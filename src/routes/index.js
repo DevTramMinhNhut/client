@@ -12,6 +12,7 @@ import Order from '../views/account/order';
 import Address from '../views/account/address';
 import Like from '../views/account/like';
 import Comment from '../views/account/comment';
+import Password from '../views/account/password';
 
 // không cần đăng nhập
 const publicRoutes = [
@@ -28,6 +29,7 @@ const publicRoutes = [
 const privateRoutes = [
   { path: '/cart/payment', component: Payment, layout: null },
   { path: '/tai-khoan/thong-tin-ca-nhan', component: Info, noSidebar: true  },
+  { path: '/tai-khoan/doi-mat-khau', component: Password, noSidebar: true  },
   { path: '/tai-khoan/hoa-don', component: Order, noSidebar: true  },
   { path: '/tai-khoan/dia-chi', component: Address, noSidebar: true  },
   { path: '/tai-khoan/yeu-thich', component: Like, noSidebar: true  },

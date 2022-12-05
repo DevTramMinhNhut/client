@@ -69,16 +69,15 @@ code {
   top: 0px;
   right: 0px;
   text-align: center;
-  color: #dddddd;
+  color: black;
   font-size: 16px;
   font-weight: 600;
   height: 30px;
-  background-color: #198754;
   border: 1px;
 }
 
 .frame-product {
-  border: 1px solid #dddddd;
+  border: 0.1px solid #ececec;
 }
 .home-product-discount-img {
   display: block;

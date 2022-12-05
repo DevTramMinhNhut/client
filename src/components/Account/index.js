@@ -6,6 +6,7 @@ import { RiBillLine } from 'react-icons/ri';
 import { BiCommentDetail } from 'react-icons/bi';
 import { HiLocationMarker } from 'react-icons/hi';
 import { BsFillHeartFill } from 'react-icons/bs';
+import { RiLockPasswordFill } from 'react-icons/ri';
 import { NavLink } from 'react-router-dom';
 
 function Account() {
@@ -19,6 +20,14 @@ function Account() {
           <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/thong-tin-ca-nhan">
             <FaRegAddressCard className="account-icon" size={26} />
             &nbsp; Thông tin tài khoản
+          </NavLink>
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item className="mb-3 account-hove">
+        <Nav.Link eventKey="link-1">
+          <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/doi-mat-khau">
+            <RiLockPasswordFill className="account-icon" size={26} />
+            &nbsp; Đổi mật khẩu
           </NavLink>
         </Nav.Link>
       </Nav.Item>

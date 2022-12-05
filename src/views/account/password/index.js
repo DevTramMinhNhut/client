@@ -3,31 +3,31 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import './Info.css';
-import Information from '../../../components/Information';
+import './Password.css';
 import Account from '../../../components/Account';
 import { NavLink } from 'react-router-dom';
+import UpdatePassword from '../../../components/UpdatePassword';
 
-function Info() {
+function Password() {
   return (
-    <Container fluid className="account">
+    <Container fluid className="password">
       <Row className="mt-1">
         <Col>
           {' '}
-          <Breadcrumb className="account-bread">
-            <Breadcrumb.Item className="account-bread1"> <NavLink to="/"> Trang chủ</NavLink></Breadcrumb.Item>
-            <Breadcrumb.Item className="account-bread1">Thông tin cá nhân</Breadcrumb.Item>
+          <Breadcrumb className="password-bread">
+            <Breadcrumb.Item className="password-bread1"> <NavLink to="/"> Trang chủ</NavLink></Breadcrumb.Item>
+            <Breadcrumb.Item className="password-bread1">Đổi mật khẩu</Breadcrumb.Item>
             
           </Breadcrumb>
         </Col>
       </Row>
-      <Row className="account-content">
-        <Col sm={2} className="account-content1">
+      <Row className="password-content">
+        <Col sm={2} className="password-content1">
           <Account />
         </Col>
         <Col sm={9}>
-          <div className="account-info">
-            <Information />
+          <div className="password-info">
+            <UpdatePassword />
           </div>
         </Col>
       </Row>{' '}
@@ -38,4 +38,4 @@ function Info() {
   );
 }
 
-export default Info;
+export default Password;

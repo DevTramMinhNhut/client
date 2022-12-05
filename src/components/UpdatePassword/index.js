@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import * as customerApi from '../../../api/customer';
+import * as customerApi from '../../api/customer';
 import axios from 'axios';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import bcrypt from 'bcryptjs';
@@ -106,7 +106,7 @@ function UpdatePassword() {
     <div style={{ margin: '0 auto', width: '500px' }}>
       <Form onSubmit={handleSubmit}>
         <Row>
-          <Col sm={12} className="mb-3">
+          <Col sm={12} className="mb-3 mt-3">
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Mật khẩu củ *</Form.Label>
               <Form.Control
@@ -165,7 +165,7 @@ function UpdatePassword() {
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
-          <Col sm={12}>
+          <Col sm={12} className="mb-4">
             <Button type="submit" variant="warning">
               Đổi mật khẩu
             </Button>

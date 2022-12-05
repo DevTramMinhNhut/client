@@ -10,10 +10,7 @@
 }
 .detail-product-breadcrumbs .breadcrumb .breadcrumb-item a {
   text-decoration: none;
-  color: darkorange;
-}
-.detail-product-breadcrumbs .breadcrumb .breadcrumb-item.active {
-  color: black !important;
+  color: rgb(0, 0, 0) !important;
 }
 
 .detail-product-image-slider {
@@ -155,4 +152,9 @@
 .detail-product-comment-title {
   font-size: 20px;
   font-weight: 500;
+}
+
+.delete-detail {
+  margin-left: 120px;
+  cursor: pointer;
 }

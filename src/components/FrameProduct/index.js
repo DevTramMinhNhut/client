@@ -12,7 +12,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import axios from 'axios';
 
-import { AiOutlineHeart } from 'react-icons/ai';
+import { AiFillHeart } from 'react-icons/ai';
 import { Badge } from 'react-bootstrap';
 import { useContext } from 'react';
 
@@ -49,6 +49,7 @@ const FrameProduct = ({ data, discount }) => {
         image: product.images[0]?.image_name,
         product_price: Number(product.product_price),
         provider: product.provider,
+        storage: Number(product.storage.product_quantity - product.storage.product_sold),
         qty: 1,
       });
     }
@@ -99,7 +100,7 @@ const FrameProduct = ({ data, discount }) => {
     <Container>
       <Row>
         {data.map((product, index) => (
-          <Col  className="frame-product" sm={3} key={index} style={{ position: 'relative' }}>
+          <Col className="frame-product" sm={3} key={index} style={{ position: 'relative' }}>
             <div className={cx('home-product-discount-img')}>
               {discount === true ? (
                 <div className={cx('home-discount')}>
@@ -169,9 +170,9 @@ const FrameProduct = ({ data, discount }) => {
                 Mua
               </Button>
 
-              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">Yêu thích sản phẩm</Tooltip>}>
+              <OverlayTrigger placement="bottom" overlay={<Tooltip style={{ marginLeft: '5px' }} id="tooltip-disabled">Yêu thích</Tooltip>}>
                 <span className="d-inline-block">
-                  <AiOutlineHeart
+                  <AiFillHeart
                     onClick={() => {
                       onAddFavorite(product.product_id);
                       checkCartButton();

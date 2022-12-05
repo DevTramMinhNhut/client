@@ -3,6 +3,8 @@ import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ModalRegister = ({ setShowModalRegister }) => {
   const [show, setShow] = useState(true);
@@ -70,12 +72,28 @@ const ModalRegister = ({ setShowModalRegister }) => {
           if (res.status) {
             localStorage.setItem('author', JSON.stringify(userData));
             setShowModalRegister(false);
+            toast.success('Đăng ký thành công', {
+              position: 'top-right',
+              autoClose: 1000,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+            });
           }
         })
         .catch((err) => {
           console.log(err);
           if (err) {
-            alert('Tên đăng nhập của bạn đã bị trùng vui lòng nhập lại tên đăng nhập khác');
+            toast.error('Tên đăng nhập của bạn đã bị trùng vui lòng nhập lại tên đăng nhập khác', {
+              position: 'top-right',
+              autoClose: 1000,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+            });
+            setShowModalRegister(true);
           }
         });
     }

@@ -5,6 +5,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import './Address.css';
 import AddressList from '../../../components/AddressList';
 import Account from '../../../components/Account';
+import { NavLink } from 'react-router-dom';
 
 function Address() {
   return (
@@ -12,9 +13,11 @@ function Address() {
       <Row className="mt-1">
         <Col>
           {' '}
-          <Breadcrumb className="account-bread" >
-            <Breadcrumb.Item className="account-bread1"  href="/">Trang chủ</Breadcrumb.Item>
-            <Breadcrumb.Item  className="account-bread1" >Danh sách địa chỉ</Breadcrumb.Item>
+          <Breadcrumb className="account-bread">
+            <Breadcrumb.Item className="account-bread1">
+              <NavLink to="/"> Trang chủ</NavLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item className="account-bread1">Danh sách địa chỉ</Breadcrumb.Item>
           </Breadcrumb>
         </Col>
       </Row>
@@ -22,10 +25,10 @@ function Address() {
         <Col sm={2} className="account-content1">
           <Account />
         </Col>
-        <Col sm={9}> 
-             <div className="order-list">
-             <AddressList />
-             </div>             
+        <Col sm={9}>
+          <div className="order-list">
+            <AddressList />
+          </div>
         </Col>
       </Row>{' '}
       <br />

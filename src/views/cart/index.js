@@ -8,10 +8,13 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
-import { useNavigate } from 'react-router-dom';
+  import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
+import { NavLink, useNavigate } from 'react-router-dom';
 import * as customerApi from '../../api/customer';
 import ModalPayMent from '../../components/ModalPayMent';
+import { MdDeleteForever, MdOutlineNoteAlt, MdPayments } from 'react-icons/md';
+import { IoStorefrontOutline } from 'react-icons/io5';
+import { FaRegAddressCard } from 'react-icons/fa';
 
 const cx = classNames.bind(style);
 
@@ -25,7 +28,6 @@ function Cart() {
   const [showModal, setShowModal] = useState(false);
   const [pay, setPay] = useState(false);
   const [orderNote, setOrderNote] = useState();
-
   const [checkCustomer, setCheckCustomer] = useState(false);
 
   useEffect(() => {
@@ -76,12 +78,23 @@ function Cart() {
 
   const addQuantity = (product_id) => {
     const exits = cartItem.find((x) => x.product_id === product_id);
-    if (exits) {
+
+    if (exits.qty !== exits.storage) {
       let listCart = cartItem.map((item) => {
         return item.product_id === product_id ? { ...item, qty: exits.qty + 1 } : item;
       });
       setCartItem(listCart);
       localStorage.setItem('cart', JSON.stringify(listCart));
+    } else {
+      toast.warning('Sản phẩm trong kho không đủ!!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   const subtractQuantity = (product_id) => {
@@ -150,7 +163,7 @@ function Cart() {
                 progress: undefined,
               });
             }
-            localStorage.removeItem('cart')
+            localStorage.removeItem('cart');
             setTimeout(() => {
               navigate('/');
             }, 1500);
@@ -182,7 +195,7 @@ function Cart() {
   };
   const checkPayMent = () => {
     if (checkCustomer === false) {
-      toast.warn('Cập nhật thông tin để thanh toán', {
+      toast.warning('Cập nhật thông tin để thanh toán', {
         position: 'top-right',
         autoClose: 2000,
         closeOnClick: false,
@@ -206,9 +219,10 @@ function Cart() {
           <div>
             <div className={cx('detail-product-breadcrumbs')}>
               <Breadcrumb>
-                <Breadcrumb.Item href="#">Trang chủ</Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <NavLink to="/"> Trang chủ</NavLink>{' '}
+                </Breadcrumb.Item>
                 <Breadcrumb.Item href="#">Giỏ hàng</Breadcrumb.Item>
-                <Breadcrumb.Item active>trầm minh nhựt</Breadcrumb.Item>
               </Breadcrumb>
             </div>
           </div>
@@ -217,7 +231,7 @@ function Cart() {
               <h6> Giỏ hàng của bạn </h6>
             </Col>
             <Col sm={4}>
-              <h6> Vui lòng chọn địa chỉ giao hàng </h6>
+              <h6> Thông tin khách hàng </h6>
             </Col>
           </Row>
           <Row className={cx('home-cart-content')}>
@@ -230,7 +244,14 @@ function Cart() {
                       src={`http://127.0.0.1:8887//${product.image}`}
                       alt="loi"
                     />
-                    <div className={cx('home-cart-content-product-title')}>{product.product_name}</div>
+                    <div className={cx('home-cart-content-product-title')}>
+                      {product.product_name} <br />
+                      <div>
+                        <span>
+                          <IoStorefrontOutline size={18} /> {product.storage} sản phẩm
+                        </span>
+                      </div>
+                    </div>
                     <div className={cx('home-cart-content-product-price')}>
                       {product.discount_percent > 0 ? (
                         <>
@@ -297,7 +318,7 @@ function Cart() {
                       }}
                       className={cx('delete')}
                     >
-                      Xóa
+                      <MdDeleteForever size={25} />
                     </button>
                   </div>
                 </div>
@@ -329,23 +350,37 @@ function Cart() {
               </div>
             </Col>
             <Col sm={4}>
+              <h6>
+                {' '}
+                <FaRegAddressCard size={26} /> Địa chỉ thanh toán{' '}
+              </h6>
               <Form>
-                {customerAddress?.map((customerAddress, index) => (
-                  <Form.Check
-                    onClick={(e) => setAddress(e.target.value)}
-                    key={index}
-                    defaultChecked={true}
-                    name="checkAddress"
-                    type="radio"
-                    id="radio"
-                    value={customerAddress.address}
-                    label={customerAddress.address}
-                  />
-                ))}
+                {customerAddress.length > 0 ? (
+                  customerAddress?.map((customerAddress, index) => (
+                    <Form.Check
+                      onClick={(e) => setAddress(e.target.value)}
+                      key={index}
+                      defaultChecked={true}
+                      name="checkAddress"
+                      type="radio"
+                      id="radio"
+                      value={customerAddress.address}
+                      label={customerAddress.address}
+                    />
+                  ))
+                ) : (
+                  <NavLink to="/tai-khoan/dia-chi" style={{ marginLeft: '110px'}}>
+                    {' '}
+                    Thêm địa chỉ
+                  </NavLink>
+                )}
               </Form>
 
               <br />
-              <h6> Vui lòng chọn hình thức thanh toán </h6>
+              <h6>
+                {' '}
+                <MdPayments size={26} /> Hình thức thanh toán{' '}
+              </h6>
               <Form>
                 <Form.Check
                   name="checkPay"
@@ -363,12 +398,13 @@ function Cart() {
                   label="Thanh toán online"
                 />
               </Form>
-
               <br />
-              <h6> Vui lòng nhập ghi chú </h6>
+
               <Form>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                  <Form.Label>Ghi chú</Form.Label>
+                  <Form.Label>
+                    <MdOutlineNoteAlt size={26} /> Ghi chú
+                  </Form.Label>
                   <Form.Control as="textarea" onChange={(e) => setOrderNote(e.target.value)} rows={3} />
                 </Form.Group>
               </Form>
@@ -377,14 +413,14 @@ function Cart() {
         </>
       ) : (
         <div className="card-none">
-        <br />
-        <Image
-          style={{ width: '200px', height: '200px' }}
-          src="https://frontend.tikicdn.com/_desktop-next/static/img/account/empty-order.png"
-          alt="loi"
-        />
-        <h6>Chưa có trong giỏ hàng</h6>
-      </div>
+          <br />
+          <Image
+            style={{ width: '200px', height: '200px' }}
+            src="https://frontend.tikicdn.com/_desktop-next/static/img/account/empty-order.png"
+            alt="loi"
+          />
+          <h6>Chưa có trong giỏ hàng</h6>
+        </div>
       )}
 
       {showModal ? <ModalPayMent total={total} setShowModal={setShowModal} orderNote={orderNote} /> : <></>}

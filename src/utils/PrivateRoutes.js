@@ -10,6 +10,9 @@ const PrivateRoutes = () => {
     if(checkAuth === null) {
         auth.token = true;
     }
+    if(!checkAuth.length) {
+      auth.token = false;
+  }
     return(
         auth.token ? <Outlet/> : <Navigate to="/"/>
     )

@@ -9,6 +9,7 @@ import { Form, Image, InputGroup } from 'react-bootstrap';
 import { BiSearchAlt } from 'react-icons/bi';
 import CommentList from '../../../components/CommentList';
 import * as commentApi from '../../../api/comment';
+import { NavLink } from 'react-router-dom';
 
 function Comment() {
   const [comments, setComments] = useState([]);
@@ -18,7 +19,7 @@ function Comment() {
     let local = JSON.parse(localStorage.getItem('author'));
     const fetchAPI = async () => {
       if (local) {
-        const data = await commentApi.get(`comment`);
+        const data = await commentApi.get(`comment?customer_id=${local.id}`);
         setComments(data.comments);
       }
     };
@@ -30,10 +31,10 @@ function Comment() {
         <Col>
           {' '}
           <Breadcrumb className="account-bread">
-            <Breadcrumb.Item className="account-bread1" href="/">
-              Trang chủ
+            <Breadcrumb.Item className="account-bread1">
+              <NavLink to="/"> Trang chủ</NavLink>
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="account-bread1">Thông tin hoá đơn</Breadcrumb.Item>
+            <Breadcrumb.Item className="account-bread1">Bình luận sản phẩm</Breadcrumb.Item>
           </Breadcrumb>
         </Col>
       </Row>
@@ -48,8 +49,8 @@ function Comment() {
                 <BiSearchAlt size={26} />
               </InputGroup.Text>
               <Form.Control
-                placeholder="Tìm bình luận thep tên sản phẩm"
-                aria-label="Tìm bình luận thep tên sản phẩm"
+                placeholder="Tìm bình luận theo tên sản phẩm"
+                aria-label="Tìm bình luận theo tên sản phẩm"
                 aria-describedby="basic-addon1"
                 onChange={(e) => setSearch(e.target.value)}
               />
