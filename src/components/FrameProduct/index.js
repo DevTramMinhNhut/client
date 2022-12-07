@@ -110,7 +110,7 @@ const FrameProduct = ({ data, discount }) => {
                 <></>
               )}
 
-              <NavLink to={`/detail/product/${product.product_id}`}>
+              <NavLink as="li" to={`/detail/product/${product.product_id}`}>
                 <Image
                   className="d-block w-100 mt-3"
                   src={`http://127.0.0.1:8887//${product.images[0]?.image_name}`}
@@ -119,7 +119,7 @@ const FrameProduct = ({ data, discount }) => {
               </NavLink>
             </div>
             <div className={cx('home-product-discount-name')}>
-              <NavLink to={`/detail/product/${product.product_id}`} style={{ textDecoration: 'none', color: 'black' }}>
+              <NavLink as="li" to={`/detail/product/${product.product_id}`} style={{ textDecoration: 'none', color: 'black' }}>
                 {product.product_name}
               </NavLink>
             </div>

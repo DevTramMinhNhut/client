@@ -20,7 +20,7 @@ const cx = classNames.bind(style);
 function Home() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [numberProductList, setNumberProductList] = useState(12);
+  const [numberProductList, setNumberProductList] = useState(17);
   useEffect(() => {
     const fetchAPI = async () => {
       const data = await productApi.get(`product?limit=${numberProductList}`);
@@ -29,9 +29,17 @@ function Home() {
     };
     fetchAPI();
   }, [numberProductList]);
+  const checkProductsList = [];
+  if (data) {
+    data.forEach((product, index) => {
+      if (product.discount === null) {
+        checkProductsList.push(product);
+      }
+    });
+  }
 
   const number = () => {
-    setNumberProductList(numberProductList + 4);
+    setNumberProductList(numberProductList + 5);
   };
 
   const [dataNew, setDataNew] = useState([]);
@@ -48,7 +56,7 @@ function Home() {
   const checkDiscount = [];
   useEffect(() => {
     const fetchAPI = async () => {
-      const data = await productApi.get(`product?limit=8`);
+      const data = await productApi.get(`product?limit=999`);
       setDataDiscount(data.products);
       setLoading(false);
     };
@@ -63,85 +71,85 @@ function Home() {
   }
   if (loading) return <Loadpage />;
   else
-  return (
-    <Container fluid="md">
-      <Row className={cx('home-slider')}>
-        <Col>
-          <Carousel>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="https://cdn.tgdd.vn/bachhoaxanh/banners/2505/bhx-thich-qua-1407202281848.jpg"
-                alt=""
-              />
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="https://cdn.tgdd.vn/bachhoaxanh/banners/2505/giat-xa-giam-den-30-120820221471.jpg"
-                alt=""
-              />
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="https://cdn.tgdd.vn/bachhoaxanh/banners/2505/sua-gia-si-1208202214749.jpg"
-                alt=""
-              />
-            </Carousel.Item>
-          </Carousel>
-        </Col>
-      </Row>
-      <Row className={cx('home-product-new')}>
-        <Col>
-          <div className={cx('home-product-new-title')}>Sản phẩm mới nhất</div>
-          <Container>
-            <Row>
-              {dataNew.map((product, index) => (
-                <Col md={2} sm={1} key={index}>
-                  <Link style={{ textDecoration: 'none' }} to={`/detail/product/${product.product_id}`} key={index}>
-                    <Image
-                      style={{ width: '80px', Height: '40px', display: 'block', margin: '0 auto' }}
-                      src={`http://127.0.0.1:8887//${product.images[0]?.image_name}`}
-                      alt="loi"
-                    />
-                    <span style={{ color: 'black' }}>{product.product_name}</span>
-                  </Link>
-                </Col>
-              ))}
-            </Row>
-          </Container>
-        </Col>
-      </Row>
-
-      <Row className={cx('home-product-discount')}>
-        <Col>
-          <div className={cx('home-product-discount-tile')}> SẢN PHẨM KHUYẾN MÃI </div>
-          <div className={cx('home-product-discount-content')}>
+    return (
+      <Container fluid="md">
+        <Row className={cx('home-slider')}>
+          <Col>
+            <Carousel>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="https://cdn.tgdd.vn/bachhoaxanh/banners/2505/bhx-thich-qua-1407202281848.jpg"
+                  alt=""
+                />
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="https://cdn.tgdd.vn/bachhoaxanh/banners/2505/giat-xa-giam-den-30-120820221471.jpg"
+                  alt=""
+                />
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="https://cdn.tgdd.vn/bachhoaxanh/banners/2505/sua-gia-si-1208202214749.jpg"
+                  alt=""
+                />
+              </Carousel.Item>
+            </Carousel>
+          </Col>
+        </Row>
+        <Row className={cx('home-product-new')}>
+          <Col>
+            <div className={cx('home-product-new-title')}>Sản phẩm mới nhất</div>
             <Container>
               <Row>
-                <FrameProduct data={checkDiscount} discount={true} />
+                {dataNew.map((product, index) => (
+                  <Col md={2} sm={1} key={index}>
+                    <Link as="li" style={{ textDecoration: 'none' }} to={`/detail/product/${product.product_id}`} key={index}>
+                      <Image
+                        style={{ width: '80px', Height: '40px', display: 'block', margin: '0 auto' }}
+                        src={`http://127.0.0.1:8887//${product.images[0]?.image_name}`}
+                        alt="loi"
+                      />
+                      <span style={{ color: 'black' }}>{product.product_name}</span>
+                    </Link>
+                  </Col>
+                ))}
               </Row>
             </Container>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
 
-      <Row className={cx('home-product-all')}>
-        <Col>
-          <div className={cx('home-product-discount-tile')}>SẢN PHẨM </div>
-          <div className={cx('home-product-discount-content')}>
-            <FrameProduct data={data} discount={false} />
-            <div style={{ textAlign: 'center', marginTop: '15px', marginBottom: '15px' }}>
-              <Button onClick={() => number()}>
-                <h5> Xem thêm sản phẩm </h5>
-              </Button>
+        <Row className={cx('home-product-discount')}>
+          <Col>
+            <div className={cx('home-product-discount-tile')}> SẢN PHẨM KHUYẾN MÃI </div>
+            <div className={cx('home-product-discount-content')}>
+              <Container>
+                <Row>
+                  <FrameProduct data={checkDiscount} discount={true} />
+                </Row>
+              </Container>
             </div>
-          </div>
-        </Col>
-      </Row>
-    </Container>
-  );
+          </Col>
+        </Row>
+
+        <Row className={cx('home-product-all')}>
+          <Col>
+            <div className={cx('home-product-discount-tile')}>SẢN PHẨM </div>
+            <div className={cx('home-product-discount-content')}>
+              <FrameProduct data={checkProductsList} discount={false} />
+              <div style={{ textAlign: 'center', marginTop: '15px', marginBottom: '15px' }}>
+                <Button onClick={() => number()}>
+                  <h5> Xem thêm sản phẩm </h5>
+                </Button>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    );
 }
 
 export default Home;

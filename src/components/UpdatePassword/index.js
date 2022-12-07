@@ -3,7 +3,7 @@ import * as customerApi from '../../api/customer';
 import axios from 'axios';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import bcrypt from 'bcryptjs';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function UpdatePassword() {
   const [customer, setCustomer] = useState([]);
@@ -171,6 +171,7 @@ function UpdatePassword() {
             </Button>
           </Col>
         </Row>
+        <ToastContainer />
       </Form>
     </div>
   );

@@ -15,7 +15,7 @@ function Info() {
         <Col>
           {' '}
           <Breadcrumb className="account-bread">
-            <Breadcrumb.Item className="account-bread1"> <NavLink to="/"> Trang chủ</NavLink></Breadcrumb.Item>
+            <Breadcrumb.Item className="account-bread1"> <NavLink as="li" to="/"> Trang chủ</NavLink></Breadcrumb.Item>
             <Breadcrumb.Item className="account-bread1">Thông tin cá nhân</Breadcrumb.Item>
             
           </Breadcrumb>

@@ -13,11 +13,11 @@ function Account() {
   return (
     <Nav className="flex-column">
       <Nav.Item>
-        <Nav.Link style={{ color: 'black', textAlign: 'center' }}> Thông tin cá nhân</Nav.Link>
+        <Nav.Link as="li" style={{ color: 'black', textAlign: 'center' }}> Thông tin cá nhân</Nav.Link>
       </Nav.Item>
       <Nav.Item className="mb-3 account-hove">
         <Nav.Link eventKey="link-1">
-          <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/thong-tin-ca-nhan">
+          <NavLink  as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/thong-tin-ca-nhan">
             <FaRegAddressCard className="account-icon" size={26} />
             &nbsp; Thông tin tài khoản
           </NavLink>
@@ -25,7 +25,7 @@ function Account() {
       </Nav.Item>
       <Nav.Item className="mb-3 account-hove">
         <Nav.Link eventKey="link-1">
-          <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/doi-mat-khau">
+          <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/doi-mat-khau">
             <RiLockPasswordFill className="account-icon" size={26} />
             &nbsp; Đổi mật khẩu
           </NavLink>
@@ -33,14 +33,14 @@ function Account() {
       </Nav.Item>
       <Nav.Item className="mb-3 account-hove">
         <Nav.Link eventKey="link-1">
-          <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/hoa-don">
+          <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/hoa-don">
             <RiBillLine className="account-icon" size={28} /> Quản lý đơn hàng
           </NavLink>
         </Nav.Link>
       </Nav.Item>
       <Nav.Item className="mb-3 account-hove">
         <Nav.Link eventKey="link-1">
-          <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/dia-chi">
+          <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/dia-chi">
             <HiLocationMarker className="account-icon" size={26} />
             &nbsp; Sổ địa chỉ
           </NavLink>
@@ -49,7 +49,7 @@ function Account() {
 
       <Nav.Item className="mb-3 account-hove">
         <Nav.Link style={{ color: 'black' }} eventKey="link-1">
-          <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/binh-luan">
+          <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/binh-luan">
             <BiCommentDetail className="account-icon" size={26} />
             &nbsp; Đánh giá sản phẩm
           </NavLink>
@@ -57,7 +57,7 @@ function Account() {
       </Nav.Item>
       <Nav.Item className="mb-3 account-hove">
         <Nav.Link eventKey="link-1">
-          <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/yeu-thich">
+          <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/yeu-thich">
             <BsFillHeartFill className="account-icon" size={26} />
             &nbsp; Sản phẩm yên thích
           </NavLink>

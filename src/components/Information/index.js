@@ -8,7 +8,7 @@ import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import { toast,ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 
@@ -182,11 +182,12 @@ const Information = () => {
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="validationCustom02">
             <Form.Label>Ngày Sinh</Form.Label>
+
             <Form.Control
               type="date"
               onChange={(e) => setField('customer_dob', e.target.value)}
               name="customer_dob"
-              defaultValue={moment(customer.customer_dob).utc().format('YYYY-MM-DD')}
+              defaultValue={customer.customer_dob && moment(customer.customer_dob).utc().format('YYYY-MM-DD')}
               required
             />
           </Form.Group>

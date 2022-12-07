@@ -184,7 +184,9 @@ function DetailProduct() {
         <Breadcrumb>
           <Breadcrumb.Item>
             {' '}
-            <NavLink to="/">Trang chủ </NavLink>
+            <NavLink as="li" to="/">
+              Trang chủ{' '}
+            </NavLink>
           </Breadcrumb.Item>
           <Breadcrumb.Item href="#">Chi tiết sản phẩm</Breadcrumb.Item>
           <Breadcrumb.Item>{product.product_name}</Breadcrumb.Item>
@@ -303,7 +305,7 @@ function DetailProduct() {
                   ? products.map((listProduct, index) => (
                       <Col key={index}>
                         <div className={cx('home-product-discount-img')}>
-                          <NavLink to={`/detail/product/${listProduct.product_id}`}>
+                          <NavLink as="li" to={`/detail/product/${listProduct.product_id}`}>
                             <Image
                               className="d-block w-100 "
                               src={`http://127.0.0.1:8887//${listProduct.images[0]?.image_name}`}
@@ -313,6 +315,7 @@ function DetailProduct() {
                         </div>
                         <div className={cx('home-product-discount-name')}>
                           <NavLink
+                            as="li"
                             to={`/detail/product/${listProduct.product_id}`}
                             style={{ textDecoration: 'none', color: 'black' }}
                           >

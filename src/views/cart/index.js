@@ -8,7 +8,7 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-  import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
+import { onClickCheckCart } from '../../components/Layout/DefaultLayout/index';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as customerApi from '../../api/customer';
 import ModalPayMent from '../../components/ModalPayMent';
@@ -69,7 +69,10 @@ function Cart() {
   useEffect(() => {
     let sumCart = 0;
     cartItem.map(
-      (item) => (sumCart += (item.product_price - (item.discount_percent * item.product_price) / 100) * item.qty),
+      (item) =>
+        (sumCart +=
+          (item.product_price - ((item.discount_percent ? item.discount_percent : 0) * item.product_price) / 100) *
+          item.qty),
     );
     if (sumCart !== 0) {
       setTotal(sumCart + 15000);
@@ -138,7 +141,10 @@ function Cart() {
             {
               product_id: item.product_id,
               detail_quantity: item.qty,
-              detail_price: item.discount_percent > 0 ? item.product_price * item.discount_percent : item.product_price,
+              detail_price:
+                item.discount_percent > 0
+                  ? item.product_price - (item.discount_percent * item.product_price) / 100
+                  : item.product_price,
             },
           ];
         });
@@ -220,7 +226,7 @@ function Cart() {
             <div className={cx('detail-product-breadcrumbs')}>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <NavLink to="/"> Trang chủ</NavLink>{' '}
+                  <NavLink  as="li" style={{}} to="/"> Trang chủ</NavLink>{' '}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href="#">Giỏ hàng</Breadcrumb.Item>
               </Breadcrumb>
@@ -344,7 +350,13 @@ function Cart() {
                     </label>
                   </div>
                 </div>
-                <Button variant="outline-dark" onClick={checkPayMent}>
+                <Button
+                  variant="outline-dark"
+                  onClick={() => {
+                    checkPayMent();
+                    checkCartButton();
+                  }}
+                >
                   Mua sản phẩm
                 </Button>
               </div>
@@ -369,7 +381,7 @@ function Cart() {
                     />
                   ))
                 ) : (
-                  <NavLink to="/tai-khoan/dia-chi" style={{ marginLeft: '110px'}}>
+                  <NavLink as="li" to="/tai-khoan/dia-chi" style={{ marginLeft: '110px' }}>
                     {' '}
                     Thêm địa chỉ
                   </NavLink>

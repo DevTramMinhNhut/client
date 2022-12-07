@@ -21,11 +21,10 @@ function Order() {
     const fetchAPI = async () => {
       if (local) {
         if (status !== undefined) {
-          const data = await orderApi.get(`order?customer_id=${local.id}&&soft_Delete=0
-          &&order_status=${status}&&order_id=${search}`);
+          const data = await orderApi.get(`order?customer_id=${local.id}&&soft_Delete=0&&order_id=${search}&&limit=99`);
           setOrders(data.orders);
         } else {
-          const data = await orderApi.get(`order?customer_id=${local.id}&&soft_Delete=0&&order_id=${search}`);
+          const data = await orderApi.get(`order?customer_id=${local.id}&&soft_Delete=0&&order_id=${search}&&limit=99`);
           setOrders(data.orders);
         }
       }
@@ -40,7 +39,7 @@ function Order() {
           <Breadcrumb className="account-bread">
             <Breadcrumb.Item className="account-bread1">
               {' '}
-              <NavLink to="/"> Trang chủ</NavLink>
+              <NavLink as="li" to="/"> Trang chủ</NavLink>
             </Breadcrumb.Item>
             <Breadcrumb.Item className="account-bread1">Thông tin hoá đơn</Breadcrumb.Item>
           </Breadcrumb>
@@ -64,7 +63,7 @@ function Order() {
                   style={{ color: 'black', width: '214px' }}
                   eventKey="link-2"
                 >
-                  Chờ xác nhận
+                  Chưa xác nhận
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
@@ -112,7 +111,7 @@ function Order() {
 
           {orders.length > 0 ? (
             <div className="order-list">
-              <OrderList ordersList={orders} />
+              <OrderList ordersList={orders} status={status} />
             </div>
           ) : (
             <div className="order-none">

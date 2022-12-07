@@ -11,7 +11,7 @@ import axios from 'axios';
 import { Col, Image, Row } from 'react-bootstrap';
 import { Stepper, Step } from 'react-form-stepper';
 
-function OrderList({ ordersList }) {
+function OrderList({ ordersList, status }) {
   const [orders, setOrders] = useState([]);
   const [deleteOrder, setDeleteOrder] = useState(false);
   const [detail, setDetail] = useState(false);
@@ -93,7 +93,7 @@ function OrderList({ ordersList }) {
           </thead>
           <tbody>
             {orders.map((order, index) => {
-              return (
+              return order.order_statuses[order.order_statuses.length - 1]?.status === status || !status ? (
                 <tr key={index}>
                   <td>{order.order_id}</td>
                   <td>
@@ -102,7 +102,6 @@ function OrderList({ ordersList }) {
                       currency: 'VND',
                     })}
                   </td>
-                  {/* <td>{order.order_status[0]?.status} </td> */}
                   <td>{order.order_payment} </td>
 
                   <td>{order.address} </td>
@@ -115,20 +114,39 @@ function OrderList({ ordersList }) {
                         </Button>
                       </span>
                     </OverlayTrigger>
-
-                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">Huỷ đơn</Tooltip>}>
-                      <span className="d-inline-block">
-                        <Button
-                          onClick={() => updateStatus(order.order_id)}
-                          style={{ float: 'right' }}
-                          variant="outline-danger"
-                        >
-                          <FcCancel />
-                        </Button>
-                      </span>
-                    </OverlayTrigger>
+                    {order.order_statuses[order.order_statuses.length - 1]?.status === 'Huỷ đơn' ||
+                    order.order_statuses[order.order_statuses.length - 1]?.status === 'Đã xác nhận' ||
+                    order.order_statuses[order.order_statuses.length - 1]?.status === 'Đã giao hàng' ? (
+                      <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">Huỷ đơn</Tooltip>}>
+                        <span className="d-inline-block">
+                          <Button
+                            disabled
+                            onClick={() => updateStatus(order.order_id)}
+                            style={{ float: 'right' }}
+                            variant="outline-danger"
+                          >
+                            <FcCancel />
+                          </Button>
+                        </span>
+                      </OverlayTrigger>
+                    ) : (
+                      <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">Huỷ đơn</Tooltip>}>
+                        <span className="d-inline-block">
+                          <Button
+                            onClick={() => updateStatus(order.order_id)}
+                            style={{ float: 'right' }}
+                            variant="outline-danger"
+                          >
+                            <FcCancel />
+                          </Button>
+                        </span>
+                      </OverlayTrigger>
+                    )}
                   </td>
                 </tr>
+              ) : (
+                <>
+                </>
               );
             })}
             <ToastContainer />

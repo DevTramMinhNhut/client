@@ -23,7 +23,7 @@ function Sidebar() {
 
   useEffect(() => {
     const fetchAPI = async () => {
-      const data = await categoryApi.get('category');
+      const data = await categoryApi.get('category?limit=99');
       setCategory(data.categories);
       setLoading(false);
     };
@@ -56,6 +56,7 @@ function Sidebar() {
             {category.map((category, index) => {
               return (
                 <Link
+                  as="li"
                   className={cx('default-sidebar-menu-link')}
                   key={index}
                   to={`/detail/categories/${category.category_id}`}
@@ -77,6 +78,7 @@ function Sidebar() {
                 {favorites.map((favorite, index) => {
                   return (
                     <Link
+                      as="li"
                       className={cx('default-sidebar-menu-link')}
                       key={index}
                       to={`/detail/product/${favorite.product_id}`}

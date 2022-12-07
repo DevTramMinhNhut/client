@@ -14,17 +14,18 @@ import { NavLink } from 'react-router-dom';
 function Comment() {
   const [comments, setComments] = useState([]);
   const [search, setSearch] = useState('');
+  const [check, setCheck] = useState(false);
 
   useEffect(() => {
     let local = JSON.parse(localStorage.getItem('author'));
     const fetchAPI = async () => {
       if (local) {
-        const data = await commentApi.get(`comment?customer_id=${local.id}`);
+        const data = await commentApi.get(`comment?customer_id=${local.id}&limit=99`);
         setComments(data.comments);
       }
     };
     fetchAPI();
-  }, [search]);
+  }, [search, check]);
   return (
     <Container fluid className="account">
       <Row className="mt-1">
@@ -32,7 +33,7 @@ function Comment() {
           {' '}
           <Breadcrumb className="account-bread">
             <Breadcrumb.Item className="account-bread1">
-              <NavLink to="/"> Trang chủ</NavLink>
+              <NavLink as="li" to="/"> Trang chủ</NavLink>
             </Breadcrumb.Item>
             <Breadcrumb.Item className="account-bread1">Bình luận sản phẩm</Breadcrumb.Item>
           </Breadcrumb>
@@ -58,7 +59,7 @@ function Comment() {
           </div>
           {comments.length > 0 ? (
             <div className="order-list">
-              <CommentList commentList={comments} />
+              <CommentList commentList={comments} checkComment={setCheck} />
             </div>
           ) : (
             <div className="order-none">

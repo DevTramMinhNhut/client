@@ -53,7 +53,10 @@ function PayMent() {
           {
             product_id: item.product_id,
             detail_quantity: item.qty,
-            detail_price: item.discount_percent > 0 ? item.product_price * item.discount_percent : item.product_price,
+            detail_price:
+            item.discount_percent > 0
+              ? item.product_price - (item.discount_percent * item.product_price) / 100
+              : item.product_price,
           },
         ];
       });

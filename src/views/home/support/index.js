@@ -14,7 +14,7 @@ function Support() {
         <Col sm={12} className="support-1 mt-3">
           <h5>THÔNG TIN HỖ TRỢ</h5>
           <p>
-            Bạn muốn được hỗ trợ ? Xin mời ghé thăm trang <NavLink to={'/ho-tro'}> siêu thị mini hỗ trợ </NavLink> để
+            Bạn muốn được hỗ trợ ? Xin mời ghé thăm trang <NavLink as="li" to={'/ho-tro'}> siêu thị mini hỗ trợ </NavLink> để
             được hổ trợ một các nhanh nhất và hiệu quả.
           </p>
         </Col>
@@ -25,7 +25,7 @@ function Support() {
           <p>
             Email: nhuttram@gmail.com
             <br />
-            Phone: <Link to="tel:+0921872838"> 092-187-28-38 </Link>
+            Phone: <Link as="li" to="tel:+0921872838"> 092-187-28-38 </Link>
             <br />
             Liện hệ trực tiếp tại cửa hàng: 139, Trần Hương Đạo, Ninh Kiều, Cần Thơ
           </p>

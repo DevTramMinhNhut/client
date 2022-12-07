@@ -15,7 +15,7 @@ function Address() {
           {' '}
           <Breadcrumb className="account-bread">
             <Breadcrumb.Item className="account-bread1">
-              <NavLink to="/"> Trang chủ</NavLink>
+              <NavLink as="li" to="/"> Trang chủ</NavLink>
             </Breadcrumb.Item>
             <Breadcrumb.Item className="account-bread1">Danh sách địa chỉ</Breadcrumb.Item>
           </Breadcrumb>

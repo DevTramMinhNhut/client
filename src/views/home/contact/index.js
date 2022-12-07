@@ -13,7 +13,7 @@ function Contact() {
         <Col sm={12} className="contact-1 mt-3">
           <h5>THÔNG TIN LIÊN HỆ KHÁC</h5>
           <p>
-            Tìm siêu thị Mini ? Xin mời ghé thăm trang <NavLink to={'/lien-he'}> siêu thị mini </NavLink> để xem bản đồ
+            Tìm siêu thị Mini ? Xin mời ghé thăm trang <NavLink as="li" to={'/lien-he'}> siêu thị mini </NavLink> để xem bản đồ
             và địa chỉ các siêu thị trên toàn quốc.
           </p>
         </Col>
@@ -28,7 +28,7 @@ function Contact() {
             style="border:0;"
             allowfullscreen=""
             loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
+            // referrerpolicy="no-referrer-when-downgrade"
           ></Iframe>
         </Col>
         <Col sm={5} className="contact-2">

@@ -15,7 +15,7 @@ function Password() {
         <Col>
           {' '}
           <Breadcrumb className="password-bread">
-            <Breadcrumb.Item className="password-bread1"> <NavLink to="/"> Trang chủ</NavLink></Breadcrumb.Item>
+            <Breadcrumb.Item className="password-bread1"> <NavLink as="li" to="/"> Trang chủ</NavLink></Breadcrumb.Item>
             <Breadcrumb.Item className="password-bread1">Đổi mật khẩu</Breadcrumb.Item>
             
           </Breadcrumb>

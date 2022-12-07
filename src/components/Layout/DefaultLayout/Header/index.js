@@ -151,24 +151,24 @@ function Header() {
           <Navbar.Collapse id="navbarScroll">
             <Nav className="me-auto my-2 my-lg-0">
               <Nav.Link className={cx('header-link')}>
-                <NavLink className={cx('header-link-link')} to="/">
+                <NavLink as="li" className={cx('header-link-link')} to="/">
                   Trang Chủ
                 </NavLink>
               </Nav.Link>
               <Nav.Link className={cx('header-link')}>
-                <NavLink className={cx('header-link-link')} to="/gioi-thieu">
+                <NavLink as="li" className={cx('header-link-link')} to="/gioi-thieu">
                   {' '}
                   Giới Thiệu
                 </NavLink>
               </Nav.Link>
               <Nav.Link className={cx('header-link')}>
-                <NavLink className={cx('header-link-link')} to="/lien-he">
+                <NavLink as="li" className={cx('header-link-link')} to="/lien-he">
                   {' '}
                   Liên Hệ
                 </NavLink>
               </Nav.Link>
               <Nav.Link className={cx('header-link')}>
-                <NavLink className={cx('header-link-link')} to="/ho-tro">
+                <NavLink as="li" className={cx('header-link-link')} to="/ho-tro">
                   Hỗ Trợ
                 </NavLink>
               </Nav.Link>
@@ -179,6 +179,7 @@ function Header() {
                   <div className={cx('timkiem-ketqua')} tabIndex="-1" {...attrs}>
                     {kqtimkiem.map((result, index) => (
                       <Link
+                        as="li"
                         onClick={() => setShowKq(false)}
                         to={`/detail/product/${result.product_id}`}
                         key={index}
@@ -252,7 +253,7 @@ function Header() {
               </Nav.Link>
 
               <Nav.Link>
-                <Link to="/cart">
+                <Link as="li" to="/cart">
                   <Tippy content="Giỏ Hàng">
                     <div className={cx('header-cart')}>
                       <BsCart2 size={38} color={'white'} />
@@ -269,7 +270,7 @@ function Header() {
               </Nav.Link>
 
               <Nav.Link style={{ fontSize: '30px' }}>
-                <Link to="/tai-khoan/yeu-thich" style={{ textDecoration: 'none', color: '#fff' }}>
+                <Link as="li" to="/tai-khoan/yeu-thich" style={{ textDecoration: 'none', color: '#fff' }}>
                   <Tippy content="Yêu thích">
                     <div style={{ marginLeft: '50px', marginTop: '-2px' }}>
                       <BiHeart />
@@ -290,22 +291,22 @@ function Header() {
                   enable-caret="true"
                 >
                   <NavDropdown.Item>
-                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/thong-tin-ca-nhan">
+                    <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/thong-tin-ca-nhan">
                       Thông tin cá nhân
                     </NavLink>
                   </NavDropdown.Item>
                   <NavDropdown.Item>
-                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/dia-chi">
+                    <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/dia-chi">
                       Cập nhật địa chỉ
                     </NavLink>
                   </NavDropdown.Item>
                   <NavDropdown.Item>
-                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/doi-mat-khau">
+                    <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/doi-mat-khau">
                       Đổi mật khẩu
                     </NavLink>
                   </NavDropdown.Item>
                   <NavDropdown.Item>
-                    <NavLink style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/hoa-don">
+                    <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/hoa-don">
                       Lịch sử mua hàng
                     </NavLink>
                   </NavDropdown.Item>
@@ -317,11 +318,11 @@ function Header() {
               </Nav>
             ) : (
               <Nav className={cx('register-login')}>
-                <Nav.Link onClick={handleShowRegister} className={cx('register-login-dk')} eventKey={2}>
+                <Nav.Link as="li" onClick={handleShowRegister} className={cx('register-login-dk')} eventKey={2}>
                   Đăng Ký
                 </Nav.Link>
                 <Nav className="gachngang"> | </Nav>
-                <Nav.Link onClick={handleShow} className={cx('register-login-login')}>
+                <Nav.Link as="li" onClick={handleShow} className={cx('register-login-login')}>
                   {' '}
                   Đăng Nhập
                 </Nav.Link>

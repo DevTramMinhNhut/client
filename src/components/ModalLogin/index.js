@@ -10,8 +10,8 @@ import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { RiLockPasswordFill } from 'react-icons/ri';
-import { FaUserAlt } from 'react-icons/fa';
+import { BiUser } from 'react-icons/bi';
+import { RiLockPasswordLine } from 'react-icons/ri';
 
 // fb
 import FacebookLogin from 'react-facebook-login';
@@ -258,7 +258,7 @@ const ModalLogin = ({ setShowModal }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-4" controlId="formBasicEmail">
-            <Form.Label>Tên đăng nhập <FaUserAlt /> </Form.Label>
+            <Form.Label>Tên đăng nhập <BiUser /> </Form.Label>
             <Form.Control
               type="text"
               placeholder="Tên đăng nhập"
@@ -270,7 +270,7 @@ const ModalLogin = ({ setShowModal }) => {
             <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-4" controlId="formBasicPassword">
-            <Form.Label>Mật khẩu <RiLockPasswordFill size='22' /></Form.Label>
+            <Form.Label>Mật khẩu <RiLockPasswordLine size='22' /></Form.Label>
             <Form.Control
               type="password"
               onChange={(e) => setField('password', e.target.value)}
