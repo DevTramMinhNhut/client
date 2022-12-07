@@ -291,7 +291,11 @@ function Header() {
                   enable-caret="true"
                 >
                   <NavDropdown.Item>
-                    <NavLink as="li" style={{ color: 'black', textDecoration: 'none' }} to="/tai-khoan/thong-tin-ca-nhan">
+                    <NavLink
+                      as="li"
+                      style={{ color: 'black', textDecoration: 'none' }}
+                      to="/tai-khoan/thong-tin-ca-nhan"
+                    >
                       Thông tin cá nhân
                     </NavLink>
                   </NavDropdown.Item>
@@ -318,11 +322,11 @@ function Header() {
               </Nav>
             ) : (
               <Nav className={cx('register-login')}>
-                <Nav.Link as="li" onClick={handleShowRegister} className={cx('register-login-dk')} eventKey={2}>
+                <Nav.Link onClick={handleShowRegister} className={cx('register-login-dk')} eventKey={2}>
                   Đăng Ký
                 </Nav.Link>
                 <Nav className="gachngang"> | </Nav>
-                <Nav.Link as="li" onClick={handleShow} className={cx('register-login-login')}>
+                <Nav.Link onClick={handleShow} className={cx('register-login-login')}>
                   {' '}
                   Đăng Nhập
                 </Nav.Link>
